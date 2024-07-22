@@ -1,0 +1,149 @@
+package com.ucpb.tfsweb.batch
+
+import grails.converters.JSON
+import java.text.SimpleDateFormat
+import net.ipc.utils.DateUtils
+
+class BatchController {
+
+	/*	PROLOGUE:
+ * 	(revision)
+	SCR/ER Number: 20150820-072
+	SCR/ER Description: To separate update allocation with interfaceFiles.
+	[Revised by:] Jesse James Joson
+	[Date revised:] 10/13/2015
+	Program [Revision] Details: add a response whether to failed in UI or Success.
+	PROJECT: Web
+	MEMBER TYPE  : Groovy
+ */
+	
+    def coreAPIService
+	def batchService
+	
+    def index() {
+        render (view: "/batch/index")
+    }
+
+    def view() {
+        render (view: "/batch/index",model:chainModel ?: [:])
+    }
+
+    def interfaceFiles(){
+		ArrayList<String> methodNames = ['expiredAmla',
+										'abortPendingEtsReversal',
+										'revertToPending',
+										'purgeEts',
+										'tagAsPending',
+										'etsToPending',
+										//uncomment this when for revision of Sec_employee_audit
+//										'purgeSecEmployeeAudit',
+										//'transaction',
+										//'account',
+										//'customerAccount',
+										//'customer',
+										'gl',
+										'cifPurging',
+										'processRmaDocument'
+										]
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+    }
+	
+	def sibsInterfaceFiles(){
+		ArrayList<String> methodNames = ['extractSibs'
+										]
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	def updateAllocation(){
+		println "Now Starting in Update Allocation"
+		ArrayList<String> methodNames = ['updateAllocationUnitCode'
+										]
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		
+		println "Now Rendering JSON in Update Allocation"
+		
+		render jsonParams as JSON
+	}
+	
+	def interfaceAmlaFiles(){
+		
+		println "IM HERE interfaceAmlaFiles"
+		ArrayList<String> methodNames = ['transaction',
+										'account',
+										'customerAccount',
+										'customer'
+										
+										]
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	def cifNormalization(){
+		ArrayList<String> methodNames = ['cifNormalization'] 
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	def cifPurging() {
+		ArrayList<String> methodNames = ['cifPurging']
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+
+	
+	def afterReportInterface(){
+		ArrayList<String> methodNames = ['balance',
+										'master',
+										'masterException',
+										'dw',
+										'cbr',
+										'params',
+										'tagLcAsExpired',
+										'revalueEarmark',
+										'pusoPogi',
+										]
+										
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	def jsonCurrentTime(){
+		def jsonParams = ["time":DateUtils.timeFormat(new Date())]
+		render jsonParams as JSON
+	}
+
+    def populateCasaAccounts(){
+        println "populating casa accounts"
+        def passedParams= [:]
+        def successList=[]
+        def returnValue= coreAPIService.dummySendQuery(passedParams, "refCasaAccount/extractFromCasaFile")
+
+        if(returnValue.success){
+            successList.add(returnValue.name)
+        }
+
+        def jsonParams = [successList:successList]
+        render jsonParams as JSON
+    }
+	
+	def masterException() {
+		ArrayList<String> methodNames = ['masterException']
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	def allocationException() {
+		ArrayList<String> methodNames = ['allocationException']
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	def allocation(){
+		ArrayList<String> methodNames = ['allocation','allocationException']
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+
+}

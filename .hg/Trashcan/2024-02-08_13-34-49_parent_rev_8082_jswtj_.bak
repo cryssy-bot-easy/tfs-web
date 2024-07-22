@@ -1,0 +1,1583 @@
+diff --git a/grails-app/conf/BuildConfig.groovy b/grails-app/conf/BuildConfig.groovy
+--- a/grails-app/conf/BuildConfig.groovy
++++ b/grails-app/conf/BuildConfig.groovy
+@@ -22,6 +22,7 @@
+         grailsHome()
+         grailsCentral()
+         mavenCentral()
++        mavenRepo "file:/D:/m2/repository"
+ 
+         // uncomment these to enable remote dependency resolution from public Maven repositories
+         //mavenCentral()
+@@ -30,6 +31,9 @@
+         //mavenRepo "http://repository.codehaus.org"
+         //mavenRepo "http://download.java.net/maven/2/"
+         //mavenRepo "http://repository.jboss.com/maven2/"
++
++        mavenRepo "https://repo.grails.org/grails/core" 
++        mavenRepo "https://repo.grails.org/grails/plugins"  
+     }
+     dependencies {
+         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+diff --git a/grails-app/controllers/com/ucpb/tfsweb/batch/BatchController.groovy b/grails-app/controllers/com/ucpb/tfsweb/batch/BatchController.groovy
+--- a/grails-app/controllers/com/ucpb/tfsweb/batch/BatchController.groovy
++++ b/grails-app/controllers/com/ucpb/tfsweb/batch/BatchController.groovy
+@@ -4,6 +4,8 @@
+ import java.text.SimpleDateFormat
+ import net.ipc.utils.DateUtils
+ 
++class BatchController {
++
+ 	/*	PROLOGUE:
+  * 	(revision)
+ 	SCR/ER Number: 20150820-072
+@@ -13,5 +15,4 @@
+ 	Program [Revision] Details: add a response whether to failed in UI or Success.
+ 	PROJECT: Web
+ 	MEMBER TYPE  : Groovy
+-	Project Name: BatchController
+  */
+@@ -17,70 +18,5 @@
+  */
+-
+-/*  PROLOGUE:
+- * 	(revision)
+-	SCR/ER Number: SCR IBD-16-0219-01
+-	SCR/ER Description: Generate CIC File
+-	[Revised by:] Jesse James Joson
+-	[Date Deployed:] 02/24/2016
+-	Program [Revision] Details: Add some methods for execution of CIC file
+-	PROJECT: WEB
+-	MEMBER TYPE  : Groovy
+-	Project Name: BatchController
+- */
+- 
+- 
+- /*  PROLOGUE:
+- * 	(revision)
+-	SCR/ER Number: 
+-	SCR/ER Description: 
+-	[Revised by:] Allan Comboy Jr.
+-	[Date Deployed:] 06/07/2016
+-	Program [Revision] methods to check Sibs
+-	PROJECT: WEB
+-	MEMBER TYPE  : Groovy
+-	Project Name: BatchController
+- */
+-
+-/*  PROLOGUE:
+- * 	(revision)
+-	SCR/ER Number:20160623-080
+-	SCR/ER Description:
+-	[Revised by:] Allan Comboy Jr.
+-	[Date Deployed:] 06/24/2016
+-	Program [Revision] methods to check Sibs for CREDEX AND FORM4
+-	PROJECT: WEB
+-	MEMBER TYPE  : Groovy
+-	Project Name: BatchController
+- */
+- 
+-/**PROLOGUE:
+- * 	(revision)
+-	SCR/ER Number: ER# 20140909-038
+-	SCR/ER Description: CIF Normalization Not Working in TFS
+-	[Revised by:] Jesse James Joson
+-	[Date Created:] 08/05/2016
+-	Program [Revision] Details: The CIF Normalization was redesigned, since not all tables are normalized. Add method for the CIF Extraction.
+-	PROJECT: WEB
+-	MEMBER TYPE  : Groovy
+-	Project Name: BatchController
+- *
+- */
+-
+-/*PROLOGUE:
+- * 	(revision)
+-	SCR/ER Number: SCR# IBD-16-0615-01
+-	SCR/ER Description: To comply with the requirement for CIF archiving/purging of inactive accounts in TFS.
+-	[Revised by:] Jesse James Joson
+-	[Date Revised:] 09/22/2016
+-	Program [Revision] Details: additional methods to run account purging
+-	PROJECT: WEB
+-	MEMBER TYPE  : Groovy
+-	Project Name: BatchController
+- *
+- */
+- 
+-class BatchController {
+-
++	
+     def coreAPIService
+ 	def batchService
+ 	
+@@ -94,5 +30,4 @@
+ 
+     def interfaceFiles(){
+ 		ArrayList<String> methodNames = ['expiredAmla',
+-										'synchronizeRoutingStatus',
+ 										'abortPendingEtsReversal',
+@@ -98,5 +33,5 @@
+ 										'abortPendingEtsReversal',
+-//										'revertToPending',
++										'revertToPending',
+ 										'purgeEts',
+ 										'tagAsPending',
+ 										'etsToPending',
+@@ -113,12 +48,6 @@
+ 		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+ 		render jsonParams as JSON
+     }
+-
+-    def glis(){
+-		ArrayList<String> methodNames = ['glis']
+-		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+-		render jsonParams as JSON
+-    }
+ 	
+ 	def sibsInterfaceFiles(){
+ 		ArrayList<String> methodNames = ['extractSibs'
+@@ -127,21 +56,4 @@
+ 		render jsonParams as JSON
+ 	}
+ 	
+-	// Start IBD-16-0219-01
+-	
+-	def cicInterfaceFiles(){
+-		ArrayList<String> methodNames = ['extractCic'
+-										]
+-		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+-		render jsonParams as JSON
+-	}
+-	
+-	def cicInterfaceFiles2(){
+-		ArrayList<String> methodNames = ['extractCicHistorical'
+-										]
+-		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+-		render jsonParams as JSON
+-	}
+-	// End IBD-16-0219-01
+-	
+ 	def updateAllocation(){
+@@ -147,6 +59,6 @@
+ 	def updateAllocation(){
+-		println ("Now Starting in Update Allocation - " + new Date())
++		println "Now Starting in Update Allocation"
+ 		ArrayList<String> methodNames = ['updateAllocationUnitCode'
+ 										]
+ 		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+ 		
+@@ -149,8 +61,8 @@
+ 		ArrayList<String> methodNames = ['updateAllocationUnitCode'
+ 										]
+ 		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+ 		
+-		println ("Now Rendering JSON in Update Allocation" + new Date())
++		println "Now Rendering JSON in Update Allocation"
+ 		
+ 		render jsonParams as JSON
+ 	}
+@@ -174,15 +86,8 @@
+ 		render jsonParams as JSON
+ 	}
+ 	
+-	// ER# 20140909-038 : Start
+-	def cifNormalization2(){
+-		ArrayList<String> methodNames = ['cifNormalization2']
+-		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+-		render jsonParams as JSON
+-	}
+-	// ER# 20140909-038 : End
+ 	def cifPurging() {
+ 		ArrayList<String> methodNames = ['cifPurging']
+ 		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+ 		render jsonParams as JSON
+ 	}
+@@ -184,15 +89,8 @@
+ 	def cifPurging() {
+ 		ArrayList<String> methodNames = ['cifPurging']
+ 		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+ 		render jsonParams as JSON
+ 	}
+-	
+-	def rerouteTradeServiceJob() {
+-		ArrayList<String> methodNames = ['rerouteTradeServiceJob']
+-		def jsonParams = [successList:batchService.executeReRouteApprover(params, methodNames)]
+-		render jsonParams as JSON
+-	}
+-
+ 
+ 	
+ 	def afterReportInterface(){
+@@ -204,6 +102,7 @@
+ 										'params',
+ 										'tagLcAsExpired',
+ 										'revalueEarmark',
++										'pusoPogi',
+ 										]
+ 										
+ 		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+@@ -215,9 +114,6 @@
+ 		render jsonParams as JSON
+ 	}
+ 
+-	
+-	
+-	
+     def populateCasaAccounts(){
+         println "populating casa accounts"
+         def passedParams= [:]
+@@ -250,59 +146,4 @@
+ 		render jsonParams as JSON
+ 	}
+ 
+-	def yearEndInterfaceFiles(){
+-		ArrayList<String> methodNames = ['yearEndInsert'
+-										]
+-		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+-		render jsonParams as JSON
+-	}
+-	
+-	//Start IBD-16-0615-01
+-	def cifPurgingInterfaceFiles(){
+-		ArrayList<String> methodNames = ['cifPurgingPhase1'
+-										]
+-		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+-		render jsonParams as JSON
+-	}
+-	
+-	def cifPurgingInterfaceFiles2(){
+-		ArrayList<String> methodNames = ['cifPurgingPhase2'
+-										]
+-		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+-		render jsonParams as JSON
+-	}
+-	
+-	def cifPurgingInterfaceFiles3(){
+-		ArrayList<String> methodNames = ['cifPurgingPhase3'
+-										]
+-		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+-		render jsonParams as JSON
+-	}
+-	//End IBD-16-0615-01
+-	def timeThread(){
+-	
+-		ArrayList<String> singleMethod = ['sibsTimer'
+-										 ]
+-
+-		def jsonParams = [successList:batchService.testMeth(params, singleMethod)]	
+-	
+-	
+-		   
+-		render jsonParams as JSON
+-
+-
+-	
+-	}
+-	
+-	def executeDailyItrs(){
+-		ArrayList<String> methodNames = ['extractItrs'
+-										]
+-		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+-		render jsonParams as JSON
+-	}
+-	
+-	def retrieveInterfaceDirectories(){
+-		def jsonParams = [directories:batchService.getInterfaceDirectories()]
+-		render jsonParams as JSON
+-	}
+-}
++}
+\ No newline at end of file
+diff --git a/grails-app/services/com/ucpb/tfsweb/batch/BatchService.groovy b/grails-app/services/com/ucpb/tfsweb/batch/BatchService.groovy
+--- a/grails-app/services/com/ucpb/tfsweb/batch/BatchService.groovy
++++ b/grails-app/services/com/ucpb/tfsweb/batch/BatchService.groovy
+@@ -3,46 +3,8 @@
+ import java.text.SimpleDateFormat
+ import java.util.GregorianCalendar
+ 
+-
+-
+-/*  PROLOGUE:
+- * 	(revision)
+-	SCR/ER Number:  20160613-044
+-	SCR/ER Description: Program abnormally terminates during SIBS DB access time-out.
+-	[Revised by:] Allan Comboy Jr.
+-	[Date Deployed:]  06/14/2016
+-	Program [Revision] Details: to reconnect when disconnected to sibs (for 4 additional programs)
+-	PROJECT: WEB
+-	MEMBER TYPE  : Groovy
+-	Project Name: BatchServices
+- */
+-
+-/*  PROLOGUE:
+- * 	(revision)
+-	SCR/ER Number:  20160623-080
+-	SCR/ER Description: Program abnormally terminates during SIBS DB access time-out.
+-	[Revised by:] Allan Comboy Jr.
+-	[Date Deployed:]  06/14/2016
+-	Program [Revision] Details: for CREDEX and FORM 4
+-	PROJECT: WEB
+-	MEMBER TYPE  : Groovy
+-	Project Name: BatchServices
+- */
+-
+-/*  PROLOGUE:
+- * 	(revision)
+-	SCR/ER Number:  ER 20160905-019
+-	SCR/ER Description: Revert ets to pending cannot connect to SIBS.
+-	[Revised by:] Jesse James Joson
+-	[Date Deployed:]  10/13/2016
+-	Program [Revision] Details: The UI for auto reconnect is not functioning, revise a line to correct it.
+-	PROJECT: WEB
+-	MEMBER TYPE  : Groovy
+-	Project Name: BatchServices
+- */
+-
+ class BatchService {
+ 
+ 	def coreAPIService
+ 	
+ 	def executeInterfaceMethods(params,methodNames){
+@@ -44,11 +6,12 @@
+ class BatchService {
+ 
+ 	def coreAPIService
+ 	
+ 	def executeInterfaceMethods(params,methodNames){
++		
+ 		GregorianCalendar calendar = GregorianCalendar.getInstance()
+ 		SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy")
+ 		def passedParams
+ 		if(params.onlineReportDate != null){
+ 			passedParams = ['date':formatter.format(new SimpleDateFormat("MM/dd/yyyy").parse(params.onlineReportDate))]
+ 		}else{
+@@ -49,10 +12,10 @@
+ 		GregorianCalendar calendar = GregorianCalendar.getInstance()
+ 		SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy")
+ 		def passedParams
+ 		if(params.onlineReportDate != null){
+ 			passedParams = ['date':formatter.format(new SimpleDateFormat("MM/dd/yyyy").parse(params.onlineReportDate))]
+ 		}else{
+-			
++		
+ 			if(params.interface2Check!=null){
+ 				
+ 				if(params.interface2Check == "true"){
+@@ -56,10 +19,10 @@
+ 			if(params.interface2Check!=null){
+ 				
+ 				if(params.interface2Check == "true"){
+-			
++					
+ 					passedParams = ['dateFrom':formatter.format(new SimpleDateFormat("MM/dd/yyyy").parse(params.dateOfTransactionFrom))]
+ 					passedParams << ['dateTo':formatter.format(new SimpleDateFormat("MM/dd/yyyy").parse(params.dateOfTransactionTo))]
+ 				}
+ 			}else{
+ 				passedParams = ['date':formatter.format(calendar.getTime())]
+ 			}
+@@ -60,7 +23,8 @@
+ 					passedParams = ['dateFrom':formatter.format(new SimpleDateFormat("MM/dd/yyyy").parse(params.dateOfTransactionFrom))]
+ 					passedParams << ['dateTo':formatter.format(new SimpleDateFormat("MM/dd/yyyy").parse(params.dateOfTransactionTo))]
+ 				}
+ 			}else{
+ 				passedParams = ['date':formatter.format(calendar.getTime())]
+ 			}
++			
+ 		}
+@@ -66,5 +30,4 @@
+ 		}
+-		
+ 
+ 		ArrayList<String> methodNamesTemp = methodNames
+ 		
+@@ -73,6 +36,5 @@
+ 			methodNamesTemp.add(params.methodName)
+ 		}
+ 		def returnValue;
+-		def successList=[]
+-
++		def successList=[]		
+ 		for(String method : methodNamesTemp){
+@@ -78,3 +40,2 @@
+ 		for(String method : methodNamesTemp){
+-			println method + "POWER 2"
+ 			try{
+@@ -80,5 +41,4 @@
+ 			try{
+-	
+ 				returnValue = coreAPIService.dummySendQuery(passedParams, "batch/${method}")
+ 				if(returnValue.success){
+ 					successList.add(returnValue.name)
+@@ -82,8 +42,4 @@
+ 				returnValue = coreAPIService.dummySendQuery(passedParams, "batch/${method}")
+ 				if(returnValue.success){
+ 					successList.add(returnValue.name)
+-				
+-				}else {
+-					successList.add(returnValue.name)
+-					successList.add(returnValue.p_message)
+ 				}
+@@ -89,9 +45,3 @@
+ 				}
+-				if(returnValue.sibsretry){
+-					successList.add("hhreconmm"+returnValue.name+"hhreconmm")
+-					
+-				}
+-
+-				
+ 			}catch(Exception e){
+ 				e.printStackTrace()
+@@ -96,4 +46,5 @@
+ 			}catch(Exception e){
+ 				e.printStackTrace()
++			
+ 			}
+ 		}
+@@ -98,9 +49,3 @@
+ 			}
+ 		}
+-		return successList
+-	}
+-	
+-	
+-	
+-	def executeReRouteApprover(params,methodNames){
+ 		
+@@ -106,76 +51,4 @@
+ 		
+-		def passedParams = ['docNumber':params.docNumber,'newApprover':params.newApprover]
+-		
+-
+-		ArrayList<String> methodNamesTemp = methodNames
+-		
+-		if(params.adhoc == "true" && params.methodName != null){
+-			methodNamesTemp.clear()
+-			methodNamesTemp.add(params.methodName)
+-		}
+-		def returnValue;
+-		def successList=[]
+-
+-		for(String method : methodNamesTemp){
+-			println method + "POWER 3"
+-			try{
+-	
+-				returnValue = coreAPIService.dummySendQuery(passedParams, "batch/${method}")
+-				
+-				
+-				println "returnValue Size: " + returnValue.size();
+-				returnValue.each { key, val ->
+-					println "Key: $key  Value: $val"
+-				}
+-				
+-				
+-				if(returnValue.success){
+-					successList.add(returnValue.name)
+-				
+-				}else {
+-					successList.add(returnValue.name)
+-					successList.add(returnValue.p_message)
+-				}
+-				if(returnValue.sibsretry){
+-					successList.add("hhreconmm"+returnValue.name+"hhreconmm")
+-					
+-				}
+-				
+-				println "successList Size: " + successList.size();
+-				successList.each { entry , index ->
+-				    println "${index}. successList: ${entry}"
+-				}
+-				
+-			}catch(Exception e){
+-				System.err.println("rerouteTradeServiceJob: "+ e.getMessage())
+-			}
+-		}
+-		return successList
+-	}
+-
+-	def getInterfaceDirectories(){
+-		def result = coreAPIService.dummySendQuery([:], "batch/getInterfaceDirectories")
+-		return result.directories
+-	}	
+-	
+-	
+-	def testMeth(params,methodNames){
+-	
+-		def returnValue;
+-		def successList=[]
+-		ArrayList<String> methodNamesTemp = methodNames
+-		for(String method : methodNamesTemp){
+-			try{
+-
+-				returnValue = coreAPIService.dummySendQuery(null, "batch/${method}")
+-				
+-				successList.add(returnValue.recon); // ER 20160905-019 - to return if for reconnection or not.
+-
+-			}catch(Exception e){
+-				e.printStackTrace()
+-			}
+-		}
+-
+ 		return successList
+ 	}
+ }
+\ No newline at end of file
+diff --git a/grails-app/views/batch/index.gsp b/grails-app/views/batch/index.gsp
+index e105f846781036817a25337ccedc84028c9cf3ae..7040e4fbd224c6cdabd20f7c956dd6d29dab31ce
+GIT binary patch
+literal 52211
+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
+
+diff --git a/web-app/js/batch/batch_events.js b/web-app/js/batch/batch_events.js
+--- a/web-app/js/batch/batch_events.js
++++ b/web-app/js/batch/batch_events.js
+@@ -1,90 +1,4 @@
+ $(function(){
+-
+-/*  PROLOGUE:
+- * 	(revision)
+-	SCR/ER Number: SCR IBD-16-0219-01
+-	SCR/ER Description: Generate CIC File
+-	[Revised by:] Jesse James Joson
+-	[Date Deployed:] 02/24/2016
+-	Program [Revision] Details: Add some methods that will call by UI to extract CIC file
+-	PROJECT: WEB
+-	MEMBER TYPE  : Javascript
+-	Project Name: batch_events.js
+-*/
+-
+-	/*  PROLOGUE:
+-	 * 	(revision)
+-		SCR/ER Number: 
+-		SCR/ER Description: Reconnect to sibs counter
+-		[Revised by:] Allan Comboy Jr.
+-		[Date Deployed:] 06/07/2016
+-		Program [Revision] Details: Add a request to check if SIBS disconnection ocuur
+-		PROJECT: WEB
+-		MEMBER TYPE  : Javascript
+-		Project Name: batch_events.js
+-	*/
+-	
+-	/*  PROLOGUE:
+-	 * 	(revision)
+-		SCR/ER Number:  20160613-044 - 20160623-080
+-		SCR/ER Description: Program abnormally terminates during SIBS DB access time-out.
+-		[Revised by:] Allan Comboy Jr.
+-		[Date Deployed:]  06/14/2016 - 06/24/2016 
+-		Program [Revision] Details: to reconnect when disconnected to sibs (for 4 additional programs) -( 06/24/2016(CREDEX anf FORM 4) )
+-		PROJECT: WEB
+-		MEMBER TYPE  : Javascript
+-		Project Name: batch_events.js
+-	 */
+-
+-	/*PROLOGUE:
+-	 * 	(revision)
+-		SCR/ER Number: ER# 20140909-038
+-		SCR/ER Description: CIF Normalization Not Working in TFS
+-		[Revised by:] Jesse James Joson
+-		[Date Created:] 08/05/2016
+-		Program [Revision] Details: The CIF Normalization was redesigned, since not all tables are normalized. Add method for the CIF Extraction.
+-		PROJECT: WEB
+-		MEMBER TYPE  : Javascript
+-		Project Name: batch_event.js
+-	 *
+-	 */
+-
+-	/*PROLOGUE:
+-	 * 	(revision)
+-		SCR/ER Number: SCR# IBD-16-0615-01
+-		SCR/ER Description: To comply with the requirement for CIF archiving/purging of inactive accounts in TFS.
+-		[Revised by:] Jesse James Joson
+-		[Date Revised:] 09/22/2016
+-		Program [Revision] Details: additional scripts to run account purging
+-		PROJECT: WEB
+-		MEMBER TYPE  : Javascript
+-		Project Name: batch_event.js
+-	 *
+-	 */
+-
+-	/*PROLOGUE:
+-	 * 	(revision)
+-		SCR/ER Number:
+-		SCR/ER Description:
+-		[Revised by:] Cedrick C. Nungay
+-		[Date Revised:] 09/29/2017
+-		Program [Revision] Details: Updated displaying result for processing batch for Process Rma Document
+-		PROJECT: WEB
+-		MEMBER TYPE  : Javascript
+-		Project Name: batch_event.js
+-	 *
+-	 */
+-	/*PROLOGUE:
+-	 * 	(revision)
+-		[Revised by:] Rafael T. Poblete
+-		[Date Revised:] 06/20/2018
+-		Program [Revision] Details: Added case and function to generate Schedule 2, Schedule 3, Schedule 4 report and exception.
+-		PROJECT: WEB
+-		MEMBER TYPE  : Javascript
+-		Project Name: batch_event.js
+-	 *
+-	 */
+-	
+ 	var batchId="";
+ 	
+ 	$(".batch_button").click(function(){
+@@ -97,8 +11,6 @@
+ 			//online_reports_popup.js
+ 			if(reportName=="expiredAmla"){
+ 				openAdhocBatchReportPopupBetween();
+-			}else if(reportName=="rerouteTradeServiceJob"){
+-				openReRouteApproverPopup();
+ 			}else{
+ 				openAdhocBatchReportPopup();
+ 				
+@@ -112,7 +24,6 @@
+ 	});
+ 	
+ 	$("#btnAlertConfirm").click(function(){
+-		
+ 		mDisablePopup($("#popup_save_confirmation"),$("#confirmation_background"));
+ 		var reportName="";
+ 		if(batchId != "generateAdhoc"){
+@@ -135,9 +46,6 @@
+             case "executePopulateCasaAccounts":
+                 executePopulateCasaAccounts();
+                 break;
+-			case "generateGlis":
+-				generateGlis();
+-				break;
+ 			case "generateDailyInterface":
+ 				generateDailyInterface();
+ 				break;
+@@ -189,12 +97,6 @@
+ 			case "generateSibsInterface":
+ 				generateSibsInterface();
+ 				break;
+-			case "generateCicInterface":  // IBD-16-0219-01
+-				generateCicInterface();
+-				break;
+-			case "generateYearEndInterface":
+-				generateYearEndInterface();
+-				break;
+ 			case "generateDailySummaryOfDW":
+ 				generateDailySummaryOfDW();
+ 				break;
+@@ -198,21 +100,6 @@
+ 			case "generateDailySummaryOfDW":
+ 				generateDailySummaryOfDW();
+ 				break;
+-			case "generatecifPurgingInterface":
+-				generatecifPurgingInterface();
+-				break;
+-			case "generatecifPurgingInterface2":
+-				generatecifPurgingInterface2();
+-				break;
+-			case "generatecifPurgingInterface3":
+-				generatecifPurgingInterface3();
+-				break;
+-			case "executeDailyItrs":
+-				executeDailyItrs();
+-				break;
+-			case "executeDailyItrsReport":
+-				executeDailyItrsReport();
+-				break;
+             default:
+ 				triggerAlertMessage("Javascript Error: No ID for this action");
+ 		}
+@@ -227,18 +114,5 @@
+ 	});
+ });
+ 
+-function executeDailyItrs(){
+-	var batchUrl = dailyItrsUrl;
+-	var params = {};
+-	executeBatchAction(batchUrl,params,"dailyItrs");
+-}
+-
+-function executeDailyItrsReport(){
+-	var batchUrl = batchReportUrl;
+-	batchUrl+="?callback=?";
+-	var params= {duration:'itrs', inv:'batch', onlineReportDate:currentDate, branchUnitCode:branchUnitCode, branchUnitName:branchUnitName};
+-	executeBatchAction(batchUrl,params,"itrs");
+-}
+-
+ function executeAfterReportInterface(){
+ 	var batchUrl = afterReportInterfaceUrl;
+@@ -243,9 +117,9 @@
+ function executeAfterReportInterface(){
+ 	var batchUrl = afterReportInterfaceUrl;
+-	var params = {};
++	var params = { adhoc:'true',methodName:'ohsiiiii',onlineReportDate:currentDate, code: 'cryssyyyyyyyyyyyyyyyy'};
+ 	executeBatchAction(batchUrl,params,"afterReportInterface");
+ }
+ 
+ function executeUpdateAllocationUnitCode(){
+ 	var batchUrl = updateAllocationUrl;
+ 	var params = {};
+@@ -246,10 +120,10 @@
+ 	executeBatchAction(batchUrl,params,"afterReportInterface");
+ }
+ 
+ function executeUpdateAllocationUnitCode(){
+ 	var batchUrl = updateAllocationUrl;
+ 	var params = {};
+-	executeUpdateAction(batchUrl,params,"updateAllocationUnitCode");
++	executeBatchAction(batchUrl,params,"updateAllocationUnitCode");
+ }
+ 
+ function processRefBanks(){
+@@ -288,12 +162,6 @@
+ 	executeBatchAction(batchUrl,params,"updateTransactionRoutingDiv");
+ }
+ 
+-function generateGlis(){
+-	var batchUrl = glisUrl;
+-	var params = {};
+-	executeBatchAction(batchUrl,params,"glisDiv");
+-}
+-
+ function generateDailyInterface(){
+ 	var batchUrl = interfaceUrl;
+ 	var params = {};
+@@ -330,6 +198,5 @@
+ }
+ 
+ function generateMonthlyBatchReports(){
+-	var batchUrl = batchReportUrl,
+-		params = {duration:'monthly',inv:'batch',onlineReportDate:currentDate,branchUnitCode:branchUnitCode,branchUnitName:branchUnitName};;
++	var batchUrl = batchReportUrl;
+ 	batchUrl+="?callback=?";
+@@ -335,9 +202,6 @@
+ 	batchUrl+="?callback=?";
+-
+-	$.getJSON(interfaceDirectoriesUrl,{},function(data){
+-		params.itrsDirectory = data.directories.itrs;
+-		executeBatchAction(batchUrl,params,"monthly");
+-	});
++	var params = {duration:'monthly',inv:'batch',onlineReportDate:currentDate,branchUnitCode:branchUnitCode,branchUnitName:branchUnitName};
++	executeBatchAction(batchUrl,params,"monthly");
+ }
+ 
+ function generateQuarterlyBatchReports(){
+@@ -341,5 +205,4 @@
+ }
+ 
+ function generateQuarterlyBatchReports(){
+-
+ 	var batchUrl = batchReportUrl;
+@@ -345,5 +208,4 @@
+ 	var batchUrl = batchReportUrl;
+-
+ 	batchUrl+="?callback=?";
+ 	var params = {duration:'quarterly',inv:'batch',onlineReportDate:currentDate,branchUnitCode:branchUnitCode,branchUnitName:branchUnitName};
+ 	executeBatchAction(batchUrl,params,"quarterly");
+@@ -367,19 +229,6 @@
+ 	executeBatchAction(batchUrl,params,"sibsInterface");
+ }
+ 
+-// IBD-16-0219-01
+-function generateCicInterface(){
+-	var batchUrl = cicInterfaceUrl;
+-	var params = {};
+-	executeBatchAction(batchUrl,params,"cicInterface");
+-}
+-
+-function generateYearEndInterface(){
+-	var batchUrl = yearEndInterfaceUrl;
+-	var params = {};
+-	executeBatchAction(batchUrl,params,"yearEndInterface");
+-}
+-
+ function generateDailySummaryOfDW(){
+ 	var batchUrl = batchReportUrl;
+ 	batchUrl+="?callback=?";
+@@ -387,29 +236,5 @@
+ 	executeBatchAction(batchUrl,params,"DailySummaryOfDW");
+ }
+ 
+-function generatecifPurgingInterface(){
+-	var batchUrl = cifPurgingInterfaceUrl;
+-	var params = {};
+-	executeBatchAction(batchUrl,params,"cifPurgingInterface");
+-}
+-
+-function generatecifPurgingInterface2(){
+-	var batchUrl = cifPurgingInterfaceUrl2;
+-	var params = {};
+-	executeBatchAction(batchUrl,params,"cifPurgingInterface2");
+-}
+-
+-function generatecifPurgingInterface3(){
+-	var batchUrl = cifPurgingInterfaceUrl3;
+-	var params = {};
+-	executeBatchAction(batchUrl,params,"cifPurgingInterface3");
+-}
+-
+-var cntrS = 0;
+-var test = 0;
+-var stopRequest = false;
+-var sibslabel = false;
+-var modalShow = false;
+-var cntAtmpt = 0;
+ 
+ function executeBatchAction(batchUrl,params,category){
+@@ -414,14 +239,4 @@
+ 
+ function executeBatchAction(batchUrl,params,category){
+-	var scndCall = "";
+-		
+-
+-
+-	if(category == "quarterly" || category == "daily" || category == "monthEndMcoDiv" ||  category == "specialMcoDiv" ||  category == "itrs" )	{
+-		scndCall = sibsfromGenericReport;
+-		scndCall+="?callback=?";
+-	} else {
+-		scndCall = "/tfs-web/batch/timeThread";
+-	}
+ 	centerPopup("loading_div", "loading_bg");
+ 	loadPopup("loading_div", "loading_bg");
+@@ -426,4 +241,3 @@
+ 	centerPopup("loading_div", "loading_bg");
+ 	loadPopup("loading_div", "loading_bg");
+-	stopRequest = false;
+ 
+@@ -429,3 +243,2 @@
+ 
+-	$.when(	
+ 	$.getJSON(batchUrl,params,function(data){
+@@ -431,11 +244,3 @@
+ 	$.getJSON(batchUrl,params,function(data){
+-		
+-		if(data.successList){
+-			
+-			var successList = typeof data.successList == "object" ? data.successList : data.successList.split(",");
+-			$.each($("div#" + category + " span"),function(idx,val){
+-				var i = $(this);
+-				var textValue = i.text();
+-				if($.inArray($.trim(textValue),successList) != -1){
+-					i.text(textValue + " - SUCCESS").addClass("success");
++		console.log(data, 'heyyyyyyyyyyyyyyyyyyyyyy yowwwwwwwwwwwwwwwww')
+ 
+@@ -441,159 +246,4 @@
+ 
+-				} else {
+-					var testtext  = "hhreconmm"+textValue+"hhreconmm";
+-					
+-					if($.inArray($.trim(testtext),successList) != -1){
+-						i.text(textValue + " - SIBS DISCONNECTION Please Try after 15 minutes").addClass("success");
+-//						i.text(i.text().toString().replace(/hhreconmm/g,'') + " - SIBS DISCONNECTION Please Try after 15 minutes").addClass("success");
+-						
+-					}
+-
+-				}
+-
+-				$.each($(successList), function(idx, val) {
+-					// check if the value in success list is equal to the current line
+-					if (textValue === val.substring(0, textValue.length)) {
+-						if (val.substring(textValue.length + 2, textValue.length + 9) === 'WARNING') {
+-							i.text(textValue + " - " + val.substring(textValue.length + 10, val.length)).addClass("success");
+-						}
+-					}
+-				});
+-			});
+-		}
+-
+-		$.each($("div#" + category + " span"),function(idx,val){
+-			if(!$(this).hasClass("failed") && !$(this).hasClass("success") ){
+-				if($(this).text()=="GL Movement"){
+-					$(this).text($(this).text() + " - Warnng: GL Movement file successfully generated but GL entries are not balance. Please call ITD Support").addClass("failed");	
+-				}else{
+-					$(this).text($(this).text() + " - FAILED").addClass("failed");
+-				}
+-			}
+-		});
+-		stopRequest = true;
+-		sibslabel = false;
+-		disableLoading();
+-	}).fail(function(){				
+-			alert("Critical Error: Function failed to return result.");
+-			stopRequest = true;
+-			sibslabel = false;
+-			disableLoading();
+-	}),$.getJSON(scndCall,params,function(data){
+-		
+-		if(data.successList){
+-			
+-
+-//				var gunsandroses = bullshitRequest("/tfs-web/batch/timeThread",params,category);
+-			checkRequest(scndCall,params,category);
+-			
+-				}
+-		
+-
+-		
+-
+-		
+-}).fail(function(){				
+-	stopRequest = true;
+-	sibslabel = false;
+-	disableLoading();
+-})
+-	
+-)	
+-	
+-}
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-//
+-
+-var modalRunning = false;
+-var times
+-	function hulahoop(batchUrl,params,category){
+-	modalRunning = true;
+-		var sec = 60
+-		var timer = setInterval(function() {
+-			
+-			
+-			if(stopRequest == true){
+-				document.getElementById('closeModal').click();
+-				return false;
+-			}
+-				
+-			
+-			
+-		   $('#msg').text("Retrying to connect to sibs: "+sec--);
+-		   if (sec == -1) {
+-	
+-
+-		      clearInterval(timer);
+-		      document.getElementById('closeModal').click();
+-		      modalShow = false;
+-		      modalRunning = false;
+-		      checkRequest(batchUrl,params,category);
+-		   }
+-		   if(sec % 5 == 0){
+-
+-			   checkRequest(batchUrl,params,category);	 
+-		   }
+-		}, 1000);
+-}
+-		
+-	
+-
+-
+-
+-function checkRequest(batchUrl,params,category){
+-	$.when(	
+-			$.getJSON(batchUrl,params,function(data){
+-			
+-				if(data.successList){					
+-				
+-					times = JSON.stringify(data.successList);
+-					times = times.replace('[', '');
+-					times = times.replace(']', '');
+-					times = times.replace(/"/g, '');
+-										
+-					if(times=="false"){												
+-						
+-						if(modalShow == false){
+-							document.getElementById('startCnt').click();
+-					
+-						} else {
+-							document.getElementById('closeModal').click();
+-						
+-						}
+-						
+-					}					
+-					if(modalRunning == false){
+-						hulahoop(batchUrl,params,category);
+-						$('#attemptCnt').text("Attempt/s count: "+ cntAtmpt++);
+-					}					
+-				}				
+-				
+-			}).done(function() {
+-			    console.log( "checking if failed" );
+-				
+-			})
+-			
+-		)
+-				
+-}
+-
+-function executeUpdateAction(batchUrl,params,category){
+-	centerPopup("loading_div", "loading_bg");
+-	loadPopup("loading_div", "loading_bg");
+-	
+-	$.getJSON(batchUrl,params,function(data){
+-
+-	}).success(function(data) { 
+ 		if(data.successList){
+ 			var successList = typeof data.successList == "object" ? data.successList : data.successList.split(",");
+ 			$.each($("div#" + category + " span"),function(idx,val){
+@@ -613,21 +263,5 @@
+ 			}
+ 		});
+ 		disableLoading();
+-	}).complete(function(data, jqXHR, textStatus, errorThrown) {
+-		console.log("completed");
+-		if(data.successList){
+-			var successList = typeof data.successList == "object" ? data.successList : data.successList.split(",");
+-			$.each($("div#" + category + " span"),function(idx,val){
+-				if($.inArray($.trim($(this).text()),successList) != -1){
+-					$(this).text($(this).text() + " - SUCCESS").addClass("success");
+-				}
+-			});
+-		}
+-		$.each($("div#" + category + " span"),function(idx,val){
+-			if(!$(this).hasClass("failed") && !$(this).hasClass("success") ){
+-				$(this).text($(this).text() + " - FAILED").addClass("failed");
+-			}
+-		});
+-		console.log("Status: " + textStatus + (new Date()));
+-		console.log("ErrorThrown: " + errorThrown + (new Date()));
++	}).fail(function(){
+ 		disableLoading();
+@@ -633,4 +267,5 @@
+ 		disableLoading();
++		alert("Critical Error: Function failed to return result.");
+ 	});
+ }
+ 
+@@ -634,6 +269,4 @@
+ 	});
+ }
+ 
+-
+-
+ function generateSelectedAdhoc(){
+@@ -639,4 +272,2 @@
+ function generateSelectedAdhoc(){
+-	console.log("test 1");
+-	stopRequest = false;
+ 	var batchUrl;
+@@ -642,6 +273,4 @@
+ 	var batchUrl;
+-
+-
+-
++	
+ 	centerPopup("loading_div", "loading_bg");
+ 	loadPopup("loading_div", "loading_bg");
+@@ -646,9 +275,7 @@
+ 	centerPopup("loading_div", "loading_bg");
+ 	loadPopup("loading_div", "loading_bg");
+-
+-	console.log("SelectedADHOC: " + $("#adhoc_dropdown option:selected").val());
+-	
++	console.log('hey fooooooooooollllllllllllll')
+ 	if($("#adhoc_dropdown option:selected").hasClass("interface")){
+ 		batchUrl = interfaceUrl;
+ 		$.getJSON(batchUrl,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+ 			onlineReportDate:$("#onlineReportDate").val()},adHocActionResult).fail(function(){
+@@ -651,7 +278,8 @@
+ 	if($("#adhoc_dropdown option:selected").hasClass("interface")){
+ 		batchUrl = interfaceUrl;
+ 		$.getJSON(batchUrl,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+ 			onlineReportDate:$("#onlineReportDate").val()},adHocActionResult).fail(function(){
++				console.log('aaaaaaaaaaaaaaaaaaaaasiiiiiiiiiiiiiimmmmmmmmmmmmmm')
+ 			disableLoading();
+ 			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call interface method.</span>");
+ 		});
+@@ -655,20 +283,6 @@
+ 			disableLoading();
+ 			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call interface method.</span>");
+ 		});
+-	}
+-	else if($("#adhoc_dropdown option:selected").hasClass("reroute")){
+-		batchUrl = reRouteApproverUrl;
+-		console. log("batchUrl: " + batchUrl);
+-		console. log("docNumber: " + $("#docNumber").val());
+-		console. log("newApprover: " + $("#newApprover").val());
+-		
+-		$.getJSON(batchUrl,{adhoc:'true',
+-			methodName:$("#adhoc_dropdown option:selected").val(),
+-			docNumber:$("#docNumber").val(),
+-			newApprover:$("#newApprover").val()},
+-			adHocActionResult).complete(function(){
+-			disableLoading();
+-			});
+ 	}else if($("#adhoc_dropdown option:selected").hasClass("interface2")){
+ 		batchUrl = interfaceUrl;
+ 		$.getJSON(batchUrl,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+@@ -709,68 +323,7 @@
+ 			disableLoading();
+ 			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call interface method.</span>");
+ 		});
+-	}else if($("#adhoc_dropdown option:selected").hasClass("cicInterface")){ // IBD-16-0219-01
+-		batchUrl = cicInterfaceUrl;
+-		$.getJSON(batchUrl,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+-			onlineReportDate:$("#onlineReportDate").val()},adHocActionResult).fail(function(){
+-			disableLoading();
+-			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call interface method.</span>");
+-		});
+-	}else if($("#adhoc_dropdown option:selected").hasClass("cicInterfaceHistorical")){ // IBD-16-0219-01
+-		batchUrl = cicInterfaceUrl2;
+-		$.getJSON(batchUrl,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+-			onlineReportDate:$("#onlineReportDate").val()},adHocActionResult).fail(function(){
+-			disableLoading();
+-			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call interface method.</span>");
+-		});
+-	}else if($("#adhoc_dropdown option:selected").hasClass("yearEndInterface")){
+-		batchUrl = yearEndInterfaceUrl;
+-		$.getJSON(batchUrl,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+-			onlineReportDate:$("#onlineReportDate").val()},adHocActionResult).fail(function(){			
+-			
+-			disableLoading();
+-			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call interface method.</span>");
+-		});
+-	}else if($("#adhoc_dropdown option:selected").hasClass("cifNormalization2")){
+-		// ER# 20140909-038 : Start
+-		batchUrl = cifNormalizationUrl2;
+-		$.getJSON(batchUrl,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+-			onlineReportDate:$("#onlineReportDate").val()},adHocActionResult).fail(function(){
+-			disableLoading();
+-			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call interface method.</span>");
+-		});
+-		// ER# 20140909-038 : END
+-	}
+-	// IBD-16-0615-01 : Adhoc of account purging	
+-	else if($("#adhoc_dropdown option:selected").hasClass("cifPurgingInterface")){
+-		batchUrl = cifPurgingInterfaceUrl;
+-		screenTimer(null,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+-			onlineReportDate:$("#onlineReportDate").val()},adHocActionResult);
+-		
+-		$.getJSON(batchUrl,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+-			onlineReportDate:$("#onlineReportDate").val()},adHocActionResult).complete(function(){
+-			disableLoading();
+-			
+-		});
+-	}else if($("#adhoc_dropdown option:selected").hasClass("cifPurgingInterface2")){
+-		batchUrl = cifPurgingInterfaceUrl2;
+-		screenTimer(null,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+-			onlineReportDate:$("#onlineReportDate").val()},adHocActionResult);
+-		
+-		$.getJSON(batchUrl,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+-			onlineReportDate:$("#onlineReportDate").val()},adHocActionResult).complete(function(){
+-			disableLoading();
+-		});
+-	}else if($("#adhoc_dropdown option:selected").hasClass("cifPurgingInterface3")){
+-		batchUrl = cifPurgingInterfaceUrl3;
+-		screenTimer(null,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+-			onlineReportDate:$("#onlineReportDate").val()},adHocActionResult);
+-		
+-		$.getJSON(batchUrl,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+-			onlineReportDate:$("#onlineReportDate").val()},adHocActionResult).complete(function(){
+-			disableLoading();
+-		});
+-	}else if($("#adhoc_dropdown option:selected").hasClass("cocreeReport")){
++	}else{
+ 		batchUrl = batchReportIndividualUrl;
+ 		batchUrl+="?callback=?";
+ 		var parameters= {inv:'batch',onlineReportDate:$("#onlineReportDate").val(),
+@@ -778,32 +331,7 @@
+ 		if(typeof $("#adhoc_dropdown option:selected").attr("id") !== 'undefined' &&
+ 			 typeof $("#adhoc_dropdown option:selected").attr("class") !== 'undefined'){
+ 			var param = {};
+-			param[$("#adhoc_dropdown option:selected").attr("class")] = $("#adhoc_dropdown option:selected").attr("id");
+-			$.extend(parameters,param);
+-		}
+-		$.getJSON(interfaceDirectoriesUrl,{},function(data){
+-			parameters.itrsDirectory = data.directories.itrs;
+-			$.getJSON(batchUrl,parameters,adHocActionResult).fail(function(){
+-				disableLoading();
+-				stopRequest = true;
+-				sibslabel = false;	
+-				triggerAlertMessage("<span class='failed'>Critical Error: Failed to call report method.</span>");
+-			});
+-		});
+-	}
+-	// IBD-16-0615-01 : END
+-	else{
+-		batchUrl = batchReportIndividualUrl;
+-
+-
+-		batchUrl+="?callback=?";
+-		console.log("START" + batchUrl + "END");
+-		var parameters= {inv:'batch',onlineReportDate:$("#onlineReportDate").val(),
+-				branchUnitCode:branchUnitCode,branchUnitName:branchUnitName,methodName:$("#adhoc_dropdown option:selected").val()};
+-		if(typeof $("#adhoc_dropdown option:selected").attr("id") !== 'undefined' &&
+-			 typeof $("#adhoc_dropdown option:selected").attr("class") !== 'undefined'){
+-			var param = {};
+ 			// format: object = {'class':'id'}
+ 			param[$("#adhoc_dropdown option:selected").attr("class")] = $("#adhoc_dropdown option:selected").attr("id");
+ 			$.extend(parameters,param);
+ 		}	
+@@ -806,8 +334,5 @@
+ 			// format: object = {'class':'id'}
+ 			param[$("#adhoc_dropdown option:selected").attr("class")] = $("#adhoc_dropdown option:selected").attr("id");
+ 			$.extend(parameters,param);
+ 		}	
+-		console.log("START p" + parameters + "END");
+-		console.log("START ad" + adHocActionResult + "END");
+-	
+ 		$.getJSON(batchUrl,parameters,adHocActionResult).fail(function(){
+@@ -813,3 +338,2 @@
+ 		$.getJSON(batchUrl,parameters,adHocActionResult).fail(function(){
+-		
+ 			disableLoading();
+@@ -815,5 +339,3 @@
+ 			disableLoading();
+-			stopRequest = true;
+-			sibslabel = false;	
+ 			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call report method.</span>");
+ 		});
+@@ -818,5 +340,3 @@
+ 			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call report method.</span>");
+ 		});
+-		
+-		
+ 	}
+@@ -822,9 +342,3 @@
+ 	}
+-	
+-	scndBatchUrl = sibsfromGenericReport;
+-	scndBatchUrl+="?callback=?";
+-	checkRequest(scndBatchUrl,"",adHocActionResults);
+-	
+-
+ }
+ 
+@@ -829,8 +343,4 @@
+ }
+ 
+-function adHocActionResults(data){
+-	stopRequest = false;
+-	
+-	console.log ("adHocActionResult2" );
+-	
++function adHocActionResult(data){
+ 	if('undefined' !== typeof data.successList && data.successList.length > 0){
+@@ -836,20 +346,4 @@
+ 	if('undefined' !== typeof data.successList && data.successList.length > 0){
+-		if(data.successList){
+-			cntAtmpt = 0;
+-			stopRequest = true;
+-		var successList = typeof data.successList == "object" ? data.successList : data.successList.split(",");
+-		if(successList[0].indexOf("hhreconmm") >= 0){
+-			successList[0]=successList[0].replace(/hhreconmm/g,'');
+-			sibslabel = true;
+-			
+-		}
+-		if(sibslabel == true){
+-		$(this).text($(this).text() + " - SIBS DISCONNECTION Please Try after 15 minutes").addClass("success");
+-		adHocReportStatus="SIBS DISCONNECTION Please Try after 15 minutes";
+-		disableLoading();
+-		triggerAlertMessage("<span class='success'>SIBS DISCONNECTION Please Try after 15 minutes : "+ $("#adhoc_dropdown option:selected").text() + "</span>");
+-		
+-		}else{
+ 		adHocReportStatus="SUCCESS";
+ 		disableLoading();
+ 		triggerAlertMessage("<span class='success'>Successfully executed : "+ $("#adhoc_dropdown option:selected").text() + "</span>");
+@@ -853,12 +347,8 @@
+ 		adHocReportStatus="SUCCESS";
+ 		disableLoading();
+ 		triggerAlertMessage("<span class='success'>Successfully executed : "+ $("#adhoc_dropdown option:selected").text() + "</span>");
+-		}
+-		
+-		}
+-		sibslabel = false;
+ 	}else{
+ 		adHocReportStatus="FAILED";
+ 		disableLoading();
+ 		triggerAlertMessage("<span class='failed'>Error in executing : "+$("#adhoc_dropdown option:selected").text()  + "</span>");
+ 	}
+@@ -860,70 +350,8 @@
+ 	}else{
+ 		adHocReportStatus="FAILED";
+ 		disableLoading();
+ 		triggerAlertMessage("<span class='failed'>Error in executing : "+$("#adhoc_dropdown option:selected").text()  + "</span>");
+ 	}
+-	stopRequest = true;
+-	
+-	
+-}
+-
+-function adHocActionResult(data){
+-	stopRequest = false;
+-	
+-	console.log ("adHocActionResult1" );
+-	
+-	if('undefined' !== typeof data.successList && data.successList.length > 0){
+-		if(data.successList){
+-			cntAtmpt = 0;
+-			stopRequest = true;
+-		var successList = typeof data.successList == "object" ? data.successList : data.successList.split(",");
+-	
+-		if(successList[0].indexOf("hhreconmm") >= 0){
+-			successList[0]=successList[0].replace(/hhreconmm/g,'');
+-			sibslabel = true;
+-			
+-		}
+-		if(sibslabel == true){
+-		$(this).text($(this).text() + " - SIBS DISCONNECTION Please Try after 15 minutes").addClass("success");
+-		adHocReportStatus="SIBS DISCONNECTION Please Try after 15 minutes";
+-		disableLoading();
+-		triggerAlertMessage("<span class='success'>SIBS DISCONNECTION Please Try after 15 minutes : "+ $("#adhoc_dropdown option:selected").text() + "</span>");
+-		
+-		} else if(successList[0] == "dbException"){
+-			console.log ("successList: dbException");
+-			adHocReportStatus="FAILED";
+-			triggerAlertMessage("<span class='failed'>Error in executing : "+$("#adhoc_dropdown option:selected").text()  + " " + successList[1] +  "</span>");
+-			disableLoading();
+-		}else if (successList[0].startsWith("2")){
+-			adHocReportStatus="SUCCESS";
+-			disableLoading();
+-			triggerAlertMessage("<span class='warning'>" + successList[0].substring(1) +  "</span>");
+-		} else {
+-			var selectedLength = $("#adhoc_dropdown option:selected").text().length;
+-			if (successList[0].substring(selectedLength + 2, selectedLength + 9) === 'WARNING') {
+-				var name = successList[0].substring(selectedLength + 10, successList[0].length);
+-				adHocReportStatus = name;
+-				disableLoading();
+-				triggerAlertMessage("<span class='success'>"+ name + "</span>");
+-			} else {
+-				adHocReportStatus="SUCCESS";
+-				disableLoading();
+-				triggerAlertMessage("<span class='success'>Successfully executed : "+ $("#adhoc_dropdown option:selected").text() + "</span>");
+-			}
+-		}
+-		
+-		}
+-		sibslabel = false;
+-	}else{
+-		console.log ("data.successList / data.successList.length");
+-		console.log (data.successList +" / "+ data.successList.length);
+-		adHocReportStatus="FAILED";
+-		disableLoading();
+-		triggerAlertMessage("<span class='failed'>Error in executing : "+$("#adhoc_dropdown option:selected").text() + "</span>");
+-	}
+-	stopRequest = true;
+-	
+-	
+ }
+ 
+ function showConfirmPopup(){
+@@ -973,97 +401,5 @@
+     $("#popup_alert_dv").css("width","50%");
+     mCenterPopup(mSave_div, mBg);
+     mLoadPopup(mSave_div, mBg);
+-    
+-}
+-
+-var reconn = "."
+-var prevCount = 0
+-
+-
+-function msgloadPopup(alertMessage) {
+-	if(alertMessage == "FALSE"){
+-		  $("#alertMessage").html("CONNECTED TO SIBS");
+-		 $("#btnAlertOk").show();
+-		
+-	}else{
+-	prevCount++;
+-//	centerPopup("loading_div", "loading_bg");
+-//	loadPopup("loading_div", "loading_bg");
+-    var mSave_div = $("#popup_alert_dv");
+-    var mBg = $("#popup_alert_bg");
+-    
+-    $("#alertMessage").html(alertMessage);
+-    if($.isNumeric(alertMessage)){
+-    
+-    $("#alertMessage").append('<br/>'+ "STANDBY");
+-
+-    }
+-    
+-
+-    $("#alertMessage").append(reconn + '<br/>');
+-    if(reconn.length >= 5)
+-    reconn = "";
+-    if(prevCount > 50)
+-    {
+-    reconn = reconn + "."; 
+-    prevCount = 0;
+-}
+-   
+-    
+-    $("#btnAlertOk").hide();
+-    $("#popup_alert_dv").css("width","15%");
+-    $("#popup_alert_dv").css({ 'height': "15%"});
+-    mCenterPopup(mSave_div, mBg);
+-    mLoadPopup(mSave_div, mBg); 
+-	$('#popup_alert_bg').css({
+-		"opacity": "0.2"
+-	});
+-	}
+-	
+-}
+-
+-// IBD-16-0615-01 : timer for Account purging 
+-var modalShow2 = false;
+-var requestRunning = true;
+-	function screenTimer(batchUrl,params,category){
+-	
+-		modalRunning = true;
+-		
+-		var sec = 1;
+-
+-		var minutes = 0;
+-		
+-			
+-			var timer = setInterval(function() {
+-				if(modalShow2 == false){
+-					document.getElementById('startCnt2').click();
+-				}
+-				
+-				if(stopRequest == true){
+-					document.getElementById('closeModal2').click();
+-					modalShow2 == true;
+-					clearInterval(timer);
+-					checkRequest(batchUrl,params,category);
+-					return false;
+-				} 
+-				sec++;
+-
+-				var label = " Minute";
+-				
+-				if (sec % 60 == 0) {
+-					minutes++
+-				}
+-				
+-				if (minutes>1) {
+-					label = " Minutes";
+-				}
+-	
+-				
+-				
+-			   $('#msg2').text("Runtime:   " + minutes + label);
+-			   
+-			}, 1000);
+-	}
+-	// IBD-16-0615-01
+-	
+-	
+\ No newline at end of file
++    $("#btnAlertOk").focus();
++}
+\ No newline at end of file

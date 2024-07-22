@@ -1,0 +1,557 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="layout" content="admin" />
+    <%@ page import="net.ipc.utils.DateUtils" %>
+    <title>Trade Finance System</title>
+	<style type="text/css">
+        .duration {font-size: 18px; font-weight: bold; color:#000040;}
+        .big_label_red {font-size: 18px; font-weight: bold; color: red}
+    	.batch_button {background: url(../images/button_affirmative_b.png) no-repeat; width: 64px; border: none; font-size: 13px !important; font-weight: bold; margin: 1px 0.5em; padding: 0 0 2px 2px; text-align: left; height: 21px;}
+    	.batch_button:HOVER {background-position: 0 -21px;}
+    	.batch_button:ACTIVE {background-position: 0 -42px;}
+    	span#welcome{font-size:1.2em;font-weight:bold;}
+    	.failed{color:red;font-weight:bold;}
+    	.success{color:green;font-weight:bold;}
+    	div.duration_category>label{font-size: 13px; font-weight: bold;padding-left:1em;}
+    	div.duration_category span{font-style:italic;padding-left:1.5em;display:block;}
+    	select#adhoc_dropdown {border: 1px solid #00aeef;margin-left:1em;display:block;}
+    	select#adhoc_dropdown optgroup{font-weight:bold;font-style:normal;}
+    	select#adhoc_dropdown option{padding-left:1em;font-style:italic}
+    	form#batch_form *{font-size:14px;}
+    	fieldset{padding:0.5em 1em; border-radius:0px; border: 1px solid black;}
+    	label.time-format{padding-left:2em;color:blue; font-size: 12px; font-weight:bold;}
+    	label.adhocLabel{color:blue; font-size: 12px; font-weight:bold; display:block; padding:0.5em 0;}
+    </style>
+    <script>
+		var interfaceAmlaUrl = '${g.createLink(controller:'batch', action:'interfaceAmlaFiles')}';
+	    var interfaceUrl = '${g.createLink(controller:'batch', action:'interfaceFiles')}';
+	    var cifNormalizationUrl = '${g.createLink(controller:'batch', action:'cifNormalization')}';
+		var currentTimeUrl = '${g.createLink(controller:'batch', action:'jsonCurrentTime')}';
+		var batchReportUrl = '${g.createLink(base:grailsApplication.config.tfs.report.location.base, controller:'genericReports', action:'getJSONBatch')}';
+		var specialMcoUrl = '${g.createLink(base:grailsApplication.config.tfs.report.location.base, controller:'genericReports', action:'runSpecialMco')}';
+		var batchReportIndividualUrl = '${g.createLink(base:grailsApplication.config.tfs.report.location.base, controller:'genericReports', action:'runIndividualReport')}';
+		var cifNormalizationUrl = '${g.createLink(controller:'batch', action:'cifNormalization')}';
+		var afterReportInterfaceUrl = '${g.createLink(controller:'batch', action:'afterReportInterface')}';
+		var cifPurgingUrl = '${g.createLink(controller:'batch', action:'cifPurging')}';
+		var sibsInterfaceUrl = '${g.createLink(controller:'batch', action:'sibsInterfaceFiles')}';
+
+        var populateCasaAccountsUrl = '${g.createLink(controller:'batch', action:'populateCasaAccounts')}';
+        var masterExceptionUrl = '${g.createLink(controller:'batch', action:'masterException')}';
+        var allocationExceptionUrl = '${g.createLink(controller:'batch', action:'allocationException')}';
+        var allocationUrl = '${g.createLink(controller:'batch', action:'allocation')}';
+
+		var updateAllocationUrl = '${g.createLink(controller:'batch', action:'updateAllocation')}';
+
+	    var sysDate = new Date('${DateUtils.shortDateFormat(new Date())}');
+	    var year = sysDate.getFullYear();
+	    var month = sysDate.getMonth();
+	    var day = sysDate.getDate();
+	    var currentDate = (month+1) + '/' + day + '/' + year;
+	    //TODO: change these vars (hardcoded) (!-_-)
+	    var branchUnitCode = '909';
+	    var branchUnitName = 'TRADE SERVICES DEPARTMENT';
+	    var fieldIdToChangeTime="";
+	    var adHocReportStatus="";
+    </script>
+    <g:javascript src="pop_up.js"/>
+    <g:javascript src="batch/batch_events.js"/>
+</head>
+<body style="visibility: hidden;">
+
+    <div id="outer_wrap">
+
+        <%-- HEADER --%>
+        <g:render template="/layouts/header"/>
+
+        <div id="navigation">
+            <div id="Accordion1" class="Accordion">
+                <div class="AccordionPanel">
+                    <div class="AccordionPanelTab panelHome" id="accordpanel_home">Batch Execution Home</div>
+                    <div class="AccordionPanelContent">
+                        <ul>
+                            <li><a href="<g:createLink controller="batch"/>">Batch Execution</a></li>
+                            <li><a href="<g:createLink controller="logout"/>">Login Status</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="body_forms">
+            <span id="welcome">Manual Batch Execution Module</span>
+            <br/><br/>
+            <form action="index.gsp" id="batch_form">
+            	<fieldset id="dailyInterfaces">
+		            <label class="duration">Daily</label>
+	            	<div id="special" class="duration_category">
+		            	<label>CIF Normalization</label> 
+		            	<input type="button" class="batch_button" value="Execute" id="executeCifNormalization"/>
+		            	<label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+						<br/>
+						<span>CIF Normalization</span>
+		            </div>
+		            <div id="updateAllocationUnitCode" class="duration_category">
+                        <label>Update Allocation Unit Code</label>
+                        <input type="button" class="batch_button" value="Execute" id="executeUpdateAllocationUnitCode"/>
+                   		<label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+                        <br/>
+                        <span>Update Allocation Unit Code</span>
+                    </div>
+	            	<div id="specialPopulateCasaAccounts" class="duration_category">
+                        <label>Populate CASA Accounts</label>
+                        <input type="button" class="batch_button" value="Execute" id="executePopulateCasaAccounts"/>
+                        <label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+                        <br/>
+                        <span>Populate CASA Accounts</span>
+                    </div>
+					<div id="sibsInterface" class="duration_category">
+		            	<label>Extract SIBS GL Accounts</label> 
+		            	<input type="button" class="batch_button" value="Execute" id="generateSibsInterface"/>
+		            	<label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+	            		<span>Extract SIBS GL Accounts</span>
+	            	</div>  
+                    <div id="DailySummaryOfDW" class="duration_category">
+		            	<label>Summary of DW</label> 
+		            	<input type="button" class="batch_button" value="Execute" id="generateDailySummaryOfDW"/>
+		            	<label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+	          			<span>Daily_Master_GL_Summary.xls</span>
+			            <span>Daily_Master_GL_DailyBalance_Summary.xls</span>
+	            	</div> 
+                    <div id="updateTransactionRoutingDiv" class="duration_category">
+                        <label>Update Transaction Routing</label>
+                        <input type="button" class="batch_button" value="Execute" id="updateTransactionRouting"/>
+                        <label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+                        <br/>
+                        <span>Update Transaction Routing</span>
+                    </div>
+		            <div id="interface" class="duration_category">
+		            	<label>Before-Report Interfaces</label> 
+		            	<input type="button" class="batch_button" value="Execute" id="generateDailyInterface"/>
+		            	<label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+						<br/>
+						<span>Amla Expire LC</span>
+						<span>Abort Pending ETS Reversal</span>
+			            <span>Revert Data Entry to Pending</span>
+		                <span>Purge Unapproved ETS</span>
+		            	<span>Tag As Pending</span>
+		            	<span>Revert e-TS to Pending</span>
+<%--		            	uncomment this when for revision of Sec_employee_audit--%>
+<%--		            	<span>Purge SEC_EMPLOYEE_AUDIT</span>--%>      	
+		            	<span>GL Movement</span>
+						<span>CIF Purging</span>
+		            	<span>Process Rma Document</span>
+		            </div>
+					
+					 <div id="interfaceDailyAmla" class="duration_category">
+		            	<label>DAILY BANKING DAY RUN</label> 
+		            	<input type="button" class="batch_button" value="Execute" id="generateDailyAmlaInterface"/>
+		            	<label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+						<br/>
+		            	<span>AMLA Transaction</span>
+		            	<span>AMLA Account</span>
+		            	<span>AMLA Customer Account</span>
+		            	<span>AMLA Customer</span>
+
+		            </div>
+
+		            
+		            <div id="daily" class="duration_category">
+		            	<label>Batch Reports</label> 
+		            	<input type="button" class="batch_button" value="Execute" id="generateDailyBatchReports"/>
+		            	<label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+			            <br/>
+		                <span>Consolidated_Daily_Report_on_Deposits_Collected.pdf</span>
+		                <span>Consolidated_Daily_Report_on_Deposits_Collected_2.pdf</span>
+		                <span>Consolidated_Report_on_Daily_Collections_of_Customs_Duties_Taxes_and_Other_Levies.pdf</span>
+		                <span>Consolidated_Report_on_Daily_Collections_of_Customs_Duties_Taxes_and_Other_Levies_2.pdf</span>
+		                <span>Consolidated_Report_on_Daily_Collections_of_Customs_Duties_Taxes_and_Other_Levies_3.pdf</span>
+		                <span>Consolidated_Report_on_Daily_Collections_of_Customs_Duties_Taxes_and_Other_Levies_4.pdf</span>
+		                <span>Consolidated_Report_on_Daily_Collections_of_Customs_Duties_Taxes_and_Other_Levies_5.pdf</span>
+		                <span>Consolidated_Report_On_Daily_Collections_Of_Export_Documentary_Stamp_Fees.pdf</span>
+		                <span>Consolidated_Report_On_Daily_Collections_Of_Export_Documentary_Stamp_Fees_2.pdf</span>
+		                <span>Consolidated_Report_on_Daily_Collections_of_Import_Processing_Fees.pdf</span>
+		            	<span>Consolidated_Report_on_Daily_Collections_of_Import_Processing_Fees_2.pdf</span>
+		                <span>Daily_Exception_Report_of_Accounting_Entries.pdf</span>
+		                <span>Daily_Foreign_Cash_LCs_Opened.pdf</span>
+		                <span>Daily_Foreign_LCs_Opened_Report_with_CDT_Details.pdf</span>
+		                <span>Daily_Foreign_Regular_LCs_Opened.pdf</span>
+		                <span>Daily_Funding.pdf</span>
+		                <span>Daily_Outstanding_Foreign_LCs.pdf</span>
+		                <span>Daily_Outstanding_LCs_CCBD_Report.pdf</span>
+		                <span>Daily_Report_on_Processed_Refund_2.pdf</span>
+			            <span>Daily_Summary_of_Accounting_Entries.pdf</span>
+
+		                <%-- FX Form 1 Reports--%>
+		                <%-- 	                	          
+		                <span>Schedule_7.xls</span>
+		                <span>TRD07.txt</span>
+		                --%>
+<%--		                <span>Schedule_3.pdf</span>--%>
+<%--		                <span>Schedule_4.pdf</span>	--%>
+		                <span>Schedule_5.pdf</span>
+		                <span>Schedule_9.pdf</span>
+		                <span>Schedule_10.pdf</span>
+		                <span>Schedule_11.pdf</span>
+<%--		                <span>TRD03</span>--%>
+<%--						<span>LOANSRVD.DBF</span>--%>
+						<span>CURRENTC.DBF</span>
+						
+						<%-- comment below TRD09, TRD10, TRD11 if GLFX Form 1 Output will be DBF--%>
+						<span>TRD09</span>
+						<span>TRD10</span>
+						<span>TRD11</span>
+						
+						<%-- comment below EXPORTB.DBF, LCDONEWB.DBF, IMPNEWB.DBF if GLFX Form 1 Output will be DBF--%>
+<%--						<span>EXPORTB.DBF</span>--%>
+<%--						<span>LCDONEWB.DBF</span>--%>
+<%--						<span>IMPNEWB.DBF</span>--%>
+		                		                
+		                <span>TFS_CASA_Posting_Report_All.pdf</span>
+		                <span>Trade_Services_AMLA_Reported_Transactions.pdf</span>
+		                <span>TRAMS.csv</span>		               
+					</div>
+					<div id="afterReportInterface" class="duration_category">
+                        <label>After-Report Interfaces</label>
+                        <input type="button" class="batch_button" value="Execute" id="executeAfterReportInterface"/>
+                        <label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+                        <br/>
+                        <span>Balance</span>
+                        <span>Master File</span>
+						<span>Master Exception Report</span>
+		           	 	<span>DW Parameter</span>
+		            	<span>CBR Parameter</span>
+		            	<span>GL Parameter</span>
+                        <span>Expire LCs</span>
+		            	<span>Process Revalue</span>
+		            	<span>Puso pogiiii</span>
+                    </div>
+            	</fieldset>
+	            <br/>
+	            <fieldset id="weeklyReports">
+		            <label class="duration">Weekly</label>
+		            <div id="weekly" class="duration_category">
+		            	<label>Batch Reports</label> 
+		            	<input type="button" class="batch_button" value="Execute" id="generateWeeklyBatchReports"/>
+		            	<label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+			            <br/>
+			            <span>Weekly_Schedule_of_Doc_Stamps_108.csv</span>
+			            <span>Weekly_Schedule_of_Doc_Stamps_113.csv</span>
+			            <span>Weekly_Schedule_of_Doc_Stamps_TR.csv</span>
+						<span>Weekly_Foreign_Domestic_LCs_Opened.csv</span>
+			            <span>Weekly_Report_on_Maturing_Usance_LCs.pdf</span>						
+		            </div>
+	            </fieldset>
+	            <br/>
+	            <fieldset id="monthlyReports">
+		            <label class="duration">Monthly</label>
+	                <div id="refBankDiv" class="duration_category">
+	                    <label>Process Ref Banks</label>
+	                    <input type="button" class="batch_button" value="Execute" id="processRefBank"/>
+	                    <label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+	                    <span>Process Ref Banks</span>
+	                </div>
+	                <div id="allocationFileDiv" class="duration_category">
+	                    <label>Allocation File</label>
+	                    <input type="button" class="batch_button" value="Execute" id="executeAllocationFile"/>
+	                    <label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+               			<span>Allocation File</span>
+						<span>Allocation Exception Report</span>
+	                </div>
+                    <div id="specialCloneLnappf" class="duration_category">
+                        <label>Clone LNAPPF</label>
+                        <input type="button" class="batch_button" value="Execute" id="executeCloningLnappf"/>
+                        <label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+                        <span>Clone LNAPPF</span>
+                    </div>
+                    <div id="monthEndMcoDiv" class="duration_category">
+	                    <label>Month End MCO Report</label>
+	                    <input type="button" class="batch_button" value="Execute" id="generateMonthEndMco"/>
+	                    <label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+	                    <span>Tfs_Mco_Report.xls</span>
+	                </div>
+                    <div id="specialMcoDiv" class="duration_category">
+	                    <label>Second Banking Day MCO Report</label>
+	                    <input type="button" class="batch_button" value="Execute" id="generateSpecialMco"/>
+	                    <label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+	                    <span>Tfs_Mco_Report.xls</span>
+	                </div>
+		            <div id="monthly" class="duration_category">
+		            	<label>Batch Reports</label> <input type="button" class="batch_button" value="Execute" id="generateMonthlyBatchReports"/>
+		            	<label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+		                <br/>
+		                <span>Collected_2%_CWT.pdf</span>
+		                <span>Consolidated_Report_on_Domestic_LCs_Opened_for_the_Month.pdf</span>
+		                <span>Consolidated_Report_on_Foreign_LCs_Opened_for_the_Month.pdf</span>
+		                <span>Customs_Duties_And_Taxes_And_Other_Levies.pdf</span>
+		                <span>Dm_Non_Lcs_Negotiated_For_The_Year_Classified_By_Top_30_Importer_And_Other_Local_Bank.pdf</span>
+		                <span>Domestic_LCs_Opened_for_the_Month.pdf</span>
+		                <span>Export_Negotiations_for_the_Month_per_Client.pdf</span>
+		                <span>Export_Negotiations_per_Collecting_Bank.pdf</span>
+		                <span>Export_Payments_for_the_Month_per_Client.pdf</span>
+		                <span>Foreign_LCs_Opened_for_the_Month.pdf</span>
+		                <span>Fx_Non_Lcs_Negotiated_For_The_Year_Classified_By_Top_30_Importer_And_Remitting_Bank.pdf</span>
+		                <span>List of Transactions With No CIF Number.xls</span>
+		                <span>Monthly_Transaction_Count.pdf</span>
+		                <span>Outstanding_Bank_Guaranty.pdf</span>
+		                <span>Outstanding_Domestic_Cash_LCs_Per_Currency.pdf</span>
+		                <span>Outstanding_Domestic_Cash_LCs_Per_Importer.pdf</span>
+		                <span>Outstanding_Domestic_Sight_LCs_Per_Currency.pdf</span>
+		                <span>Outstanding_Domestic_Sight_LCs_Per_Importer.pdf</span>
+		                <span>Outstanding_Domestic_Standby_LCs_Per_Currency.pdf</span>
+		                <span>Outstanding_Domestic_Standby_LCs_Per_Importer.pdf</span>
+		                <span>Outstanding_Domestic_Usance_LCs_Per_Currency.pdf</span>
+		                <span>Outstanding_Domestic_Usance_LCs_Per_Importer.pdf</span>		                
+		                <span>Outstanding_Export_Negotiations_Domestic.pdf</span>
+		                <span>Outstanding_Export_Negotiations_Foreign.pdf</span>		               
+		                <span>Outstanding_Foreign_Cash_LCs_per_Currency.pdf</span>
+		                <span>Outstanding_Foreign_Cash_LCs_per_Importer2.pdf</span>
+		                <span>Outstanding_Foreign_Sight_LCs_per_Currency.pdf</span>
+		                <span>Outstanding_Foreign_Sight_LCs_per_Importer.pdf</span>
+		                <span>Outstanding_Foreign_Standby_LCs_per_Currency.pdf</span>
+		                <span>Outstanding_Foreign_Standby_LCs_per_Importer.pdf</span>
+		                <span>Outstanding_Foreign_Usance_LCs_per_Currency.pdf</span>
+		                <span>Outstanding_Foreign_Usance_LCs_per_Importer.pdf</span>
+		                <span>Outstanding_Inward_Bills_For_Collection_Dm_Dp_Per_Currency.pdf</span>
+		                <span>Outstanding_Inward_Bills_For_Collection_Fx_Da_Dp_Oa_Dr_Per_Currency.pdf</span>
+		                <span>Outstanding_Inward_Bills_for_Collection_FXLC_per_Currency.pdf</span>
+		                <span>Outstanding_Marginal_Deposits.pdf</span>
+		                <span>Product_Availments_Exception_Report.xls</span>
+		                <span>Product_Availments_Report.xls</span>
+		                <span>Profitability_Monitoring_Exception_Report.xls</span>
+		                <span>Profitability_Monitoring_Report.xls</span>
+		            	<span>Volumetrics_Report.pdf</span>
+		                <span>YTD_Report_on_Domestic_LCs_Opened.pdf</span>
+		                <span>YTD_Report_on_Domestic_LCs_Opened_Classified_by_top_30_Importer_and_Advising_Local_Bank_in_PHP.pdf</span>
+		                <span>YTD_Report_on_Foreign_LCs_Opened.pdf</span>
+		                <span>YTD_Report_on_Foreign_LCs_Opened_Classified_by_top_30_Importer_and_Advising_Bank_in_USD.pdf</span>
+					</div>
+	            </fieldset>
+	            <br/>
+	            <fieldset id="quarterlyReports">
+		            <label class="duration">Quarterly</label>
+		            <div id="quarterly" class="duration_category">
+		            	<label>Batch Reports</label> <input type="button" class="batch_button" value="Execute" id="generateQuarterlyBatchReports"/>
+		            	<label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+		            	<br/>
+		            	<span>AP_Others.pdf</span>
+		            	<span>AR_Others.pdf</span>
+		            	<span>CREDEX_Report.pdf</span>
+		            	<span>FORM4.xls</span>
+		            	<span>Quarterly_Report_on_Foreign_Standby_LCs_Opened.pdf</span>
+		            </div>
+		        </fieldset>
+	            <br/>
+	            <fieldset id="yearlyReports">
+	            	<label class="duration">Yearly</label>
+		            <div id="yearly" class="duration_category">
+		            	<label>Batch Reports</label> <input type="button" class="batch_button" value="Execute" id="generateYearlyBatchReports"/>
+		            	<label id="start" class="time-format"></label> 
+	            		<label id="end" class="time-format"></label>
+						<br/>
+						<span>Year_End_Report_on_Foreign_LCS_Opened_per_Advising_Bank.pdf</span>
+						<span>Year_End_Report_on_Foreign_LCS_Opened_per_Confirming_Bank.pdf</span>
+						<span>Year_End_Report_on_Foreign_LCS_Opened_per_Country.pdf</span>
+						<span>YTD_Customs_Duties_And_Taxes_And_Other_Levies.pdf</span>
+						<span>YTD_Transaction_Count_Import_and_Export.pdf</span>
+		            </div>
+	            </fieldset>
+	            <br/>
+	            <fieldset id="adHoc">
+		            <label class="duration">Ad-Hoc</label>
+		            <label id="start" class="time-format"></label> 
+	            	<label id="end" class="time-format"></label>
+	            	<label id="reportStatus" class="time-format"></label>
+	            	<label id="reportName" class="adhocLabel"></label>
+		            <div id="adhoc" class="duration_category">
+						<select id="adhoc_dropdown">
+							<optgroup label="Interfaces">
+								<option value="cifNormalization" class="interface">CIF Normalization</option>
+								<option value="cifPurging" class="CIFPURGING">CIF Purging</option>
+								<option value="updateAllocationUnitCode" class="interface">Update Allocation Unit Code</option>
+								<option class="CASA">Populate CASA Accounts</option>
+								<option value="abortPendingEtsReversal" class="interface">Abort Pending ETS Reversal</option>
+					            <option value="revertToPending" class="interface">Revert Data Entry to Pending</option>
+				                <option value="purgeEts" class="interface">Purge Unapproved ETS</option>
+				            	<option value="gl" class="interface">GL Movement</option>
+				            	<option value="master" class="interface">Master File</option>
+								<option value="masterException" class="MASTEREXCEPTION">Master Exception Report</option>
+				            	<option value="dw" class="interface">DW Parameter</option>
+				            	<option value="cbr" class="interface">CBR Parameter</option>
+				            	<option value="transaction" class="interface">AMLA Transaction</option>
+				            	<option value="account" class="interface">AMLA Account</option>
+				            	<option value="customerAccount" class="interface">AMLA Customer Account</option>
+				            	<option value="customer" class="interface">AMLA Customer</option>
+				            	<option value="balance" class="interface">Balance</option>
+				            	<option value="tagAsPending" class="interface">Tag As Pending</option>
+				            	<option value="params" class="interface">GL Parameter</option>
+				            	<option value="etsToPending" class="interface">Revert e-TS to Pending</option>
+				            	<option value="purgeSecEmployeeAudit" class="interface">Purge SEC_EMPLOYEE_AUDIT</option>
+				            	<option value="revalueEarmark" class="interface">Process Revalue</option>
+				            	<option value="pusoPogi" class="interface">Puso Pogiiii</option>
+				            	<option value="tagLcAsExpired" class="interface">Expire LCs</option>
+								<option value="expiredAmla" class="interface2">Amla Expire LC</option>
+				            	<option value="processRmaDocument" class="interface">Process Rma Document</option>
+								<option value="extractSibs" class="sibsInterface">Extract SIBS GL Accounts</option>
+				            	<option value="runDailyMasterGLSummary">Daily_Master_GL_Summary.xls</option>
+					            <option value="runDailyMasterGLDailyBalanceSummary">Daily_Master_GL_DailyBalance_Summary.xls</option>
+				            </optgroup>
+							<optgroup label="Daily Batch Reports">
+				                <option id="remittance" class="consolidatedReportType" value="runConsolidatedDailyReportDepositsCollected">Consolidated_Daily_Report_on_Deposits_Collected.pdf</option>
+				                <option value="runConsolidatedDailyReportDepositsCollected">Consolidated_Daily_Report_on_Deposits_Collected_2.pdf</option>
+				                <option id="remittance" class="consolidatedReportType" value="runConsolidatedReportDaliyCollectionsCdtOtherLevies">Consolidated_Report_on_Daily_Collections_of_Customs_Duties_Taxes_and_Other_Levies.pdf</option>
+				                <option value="runConsolidatedReportDaliyCollectionsCdtOtherLevies">Consolidated_Report_on_Daily_Collections_of_Customs_Duties_Taxes_and_Other_Levies_2.pdf</option>
+				                <option value="runConsolidatedReportDailyCollectionsAll">Consolidated_Report_on_Daily_Collections_of_Customs_Duties_Taxes_and_Other_Levies_3.pdf</option>
+				                <option value="runConsolidatedReportDailyCollectionsImportExport">Consolidated_Report_on_Daily_Collections_of_Customs_Duties_Taxes_and_Other_Levies_4.pdf</option>
+				                <option value="runConsolidatedReportDailyCollectionsFinalAdvance">Consolidated_Report_on_Daily_Collections_of_Customs_Duties_Taxes_and_Other_Levies_5.pdf</option>
+				                <option id="remittance" class="consolidatedReportType" value="runConsolidatedReportDailyCollectionsExportDocumentaryStampFees">Consolidated_Report_On_Daily_Collections_Of_Export_Documentary_Stamp_Fees.pdf</option>
+				                <option value="runConsolidatedReportDailyCollectionsExportDocumentaryStampFees">Consolidated_Report_On_Daily_Collections_Of_Export_Documentary_Stamp_Fees_2.pdf</option>
+				                <option id="remittance" class="consolidatedReportType" value="runConsolidatedReportDailyCollectionsImportProcessingFees">Consolidated_Report_on_Daily_Collections_of_Import_Processing_Fees.pdf</option>
+				                <option value="runConsolidatedReportDailyCollectionsImportProcessingFees">Consolidated_Report_on_Daily_Collections_of_Import_Processing_Fees_2.pdf</option>
+				                <option id="exception" class="reportType" value="runDailySummaryOfAccountingEntries">Daily_Exception_Report_of_Accounting_Entries.pdf</option>
+				                <option value="runDailyForeignCashLcOpened">Daily_Foreign_Cash_LCs_Opened.pdf</option>
+				                <option value="runDailyFxlcOpenedReportCdtDetails">Daily_Foreign_LCs_Opened_Report_with_CDT_Details.pdf</option>
+				                <option value="runDailyForeignRegularLcOpened">Daily_Foreign_Regular_LCs_Opened.pdf</option>
+				                <option value="runDailyFunding">Daily_Funding.pdf</option>
+				                <option value="runDailyOutstandingForeignLc">Daily_Outstanding_Foreign_LCs.pdf</option>
+				                <option value="dailyOutstandingCCBD">Daily_Outstanding_LCs_CCBD_Report.pdf</option>
+				                <option value="runDailyReportProcessedRefundsBatch">Daily_Report_on_Processed_Refund_2.pdf</option>
+					            <option value="runDailySummaryOfAccountingEntries">Daily_Summary_of_Accounting_Entries.pdf</option>
+
+				                <%-- FX Form 1 Reports --%>
+				                <%-- 
+								<option id="report" class="cbReportType" value="runFxForm1Schedule7">Schedule_7.xls</option>
+								<option id="text" class="cbReportType" value="runFxForm1Schedule7">TRD07.txt</option>
+				                --%>
+				                
+<%--								<option id="report" class="cbReportType" value="runFxForm1Schedule3">Schedule_3.pdf</option>--%>
+<%--								<option id="report" class="cbReportType" value="runFxForm1Schedule4">Schedule_4.pdf</option>--%>
+								<option id="report" class="cbReportType" value="runFxForm1Schedule5">Schedule_5.pdf</option>
+								<option id="report" class="cbReportType" value="runFxForm1Schedule9">Schedule_9.pdf</option>						
+								<option id="report" class="cbReportType" value="runFxForm1Schedule10">Schedule_10.pdf</option>
+								<option id="report" class="cbReportType" value="runFxForm1Schedule11">Schedule_11.pdf</option>
+<%--								<option id="text" class="cbReportType" value="runFxForm1Schedule3">TRD03</option>--%>
+<%--								<option id="text" class="cbReportType" value="runFxForm1Schedule4">LOANSRVD.DBF</option>--%>
+								<option id="text" class="cbReportType" value="runFxForm1Schedule5">CURRENTC.DBF</option>
+								
+						<%-- comment below TRD09, TRD10, TRD11 if GLFX Form 1 Output will be DBF--%>
+								<option id="text" class="cbReportType" value="runFxForm1Schedule9">TRD09</option>
+								<option id="text" class="cbReportType" value="runFxForm1Schedule10">TRD10</option>
+								<option id="text" class="cbReportType" value="runFxForm1Schedule11">TRD11</option>
+						
+						<%-- comment below EXPORTB.DBF, LCDONEWB.DBF, IMPNEWB.DBF if GLFX Form 1 Output will be DBF--%>
+<%--								<option id="text" class="cbReportType" value="runFxForm1Schedule9">EXPORTB.DBF</option>--%>
+<%--								<option id="text" class="cbReportType" value="runFxForm1Schedule10">LCDONEWB.DBF</option>--%>
+<%--								<option id="text" class="cbReportType" value="runFxForm1Schedule11">IMPNEWB.DBF</option>--%>
+
+				                <option value="runTfsCasaPostingReport">TFS_CASA_Posting_Report.pdf</option>
+				                <option value="runTradeServicesAMLAReportedTransactions">Trade_Services_AMLA_Reported_Transactions.pdf</option>
+				                <option value="runTramsReport">TRAMS.csv</option>				                
+							</optgroup>
+							<optgroup label="Weekly">
+								<option id="viewWeeklyScheduleDocStamps108" class="reportType" value="runWeeklyScheduleDocStamps">Weekly_Schedule_of_Doc_Stamps_108.csv</option>
+					            <option id="viewWeeklyScheduleDocStamps113" class="reportType" value="runWeeklyScheduleDocStamps">Weekly_Schedule_of_Doc_Stamps_113.csv</option>
+					            <option id="viewWeeklyScheduleDocStampsTR" class="reportType" value="runWeeklyScheduleDocStamps">Weekly_Schedule_of_Doc_Stamps_TR.csv</option>
+								<option id="weeklyForeignDomesticOpenLC" class="reportType" value="runWeeklyForeignDomesticOpenLC">Weekly_Foreign_Domestic_LCs_Opened.csv</option>
+					            <option value="runWeeklyReportOnMaturingUsancLc">Weekly_Report_on_Maturing_Usance_LCs.pdf</option>
+							</optgroup>
+							<optgroup label="Monthly">
+								<option value="processRefBanks" class="interface">Process Ref Banks</option>
+								<option value="cloneLnappf" class="interface">Clone LNAPPF</option>
+								<option value="allocation" class="interface">Allocation File</option>
+								<option value="allocationException" class="ALLOCATIONEXCEPTION">Allocation Exception Report</option>
+				                <option value="runCollectedTwoPercentCwt">Collected_2%_CWT.pdf</option>
+				                <option value="runConsolidatedReportDomesticLcOpenedForMonth">Consolidated_Report_on_Domestic_LCs_Opened_for_the_Month.pdf</option>
+				                <option value="runConsolidatedReportOnForeignLcOpenedForMonth">Consolidated_Report_on_Foreign_LCs_Opened_for_the_Month.pdf</option>
+				                <option value="runCustomsDutiesAndTaxesAndOtherLevies">Customs_Duties_And_Taxes_And_Other_Levies.pdf</option>
+				                <option value="runDmNonLcsNegoForTheYear">Dm_Non_Lcs_Negotiated_For_The_Year_Classified_By_Top_30_Importer_And_Other_Local_Bank.pdf</option>
+				                <option value="runDomesticLcOpenedForTheMonth">Domestic_LCs_Opened_for_the_Month.pdf</option>
+				                <option value="runExportNegofortheMonthperClient">Export_Negotiations_for_the_Month_per_Client.pdf</option>
+				                <option value="runexportNegoperCollectingBank">Export_Negotiations_per_Collecting_Bank.pdf</option>
+				                <option value="runExportPaymentsfortheMonthperClient">Export_Payments_for_the_Month_per_Client.pdf</option>
+				                <option value="runForeignLcOpenedForTheMonth">Foreign_LCs_Opened_for_the_Month.pdf</option>
+				                <option value="runFxNonLcsNegoForTheYear">Fx_Non_Lcs_Negotiated_For_The_Year_Classified_By_Top_30_Importer_And_Remitting_Bank.pdf</option>			                
+				                <option value="runListOfTransactionsWithNoCifNumber">List of Transactions With No CIF Number.xls</option>
+				                <option value="runMonthlyTransactionCountReport">Monthly_Transaction_Count.pdf</option>
+				                <option value="runOutstandingBankGuarantyReport">Outstanding_Bank_Guaranty.pdf</option>
+				                <option value="runOutstandingDomesticCashLcPerCurrency">Outstanding_Domestic_Cash_LCs_Per_Currency.pdf</option>
+				                <option value="runOutstandingDomesticCashLcPerImporter">Outstanding_Domestic_Cash_LCs_Per_Importer.pdf</option>
+				                <option value="runOutstandingDomesticSightLcPerCurrency">Outstanding_Domestic_Sight_LCs_Per_Currency.pdf</option>
+				                <option value="runOutstandingDomesticSightLcPerImporter">Outstanding_Domestic_Sight_LCs_Per_Importer.pdf</option>
+				                <option value="runOutstandingDomesticStandbyLcPerCurrency">Outstanding_Domestic_Standby_LCs_Per_Currency.pdf</option>
+				                <option value="runOutstandingDomesticStandbyLcPerImporter">Outstanding_Domestic_Standby_LCs_Per_Importer.pdf</option>
+				                <option value="runOutstandingDomesticUsanceLcPerCurrency">Outstanding_Domestic_Usance_LCs_Per_Currency.pdf</option>
+				                <option value="runOutstandingDomesticUsanceLcPerImporter">Outstanding_Domestic_Usance_LCs_Per_Importer.pdf</option>				                
+				                <option value="runOutstandingExportNegotiationDomestic">Outstanding_Export_Negotiations_Domestic.pdf</option>
+				                <option value="runOutstandingExportNegotiationForeign">Outstanding_Export_Negotiations_Foreign.pdf</option>				              
+				                <option value="runOutstandingForeignCashLcPerCurrency">Outstanding_Foreign_Cash_LCs_per_Currency.pdf</option>
+				                <option value="runOutstandingForeignCashLcPerImporter">Outstanding_Foreign_Cash_LCs_per_Importer2.pdf</option>
+				                <option value="runOutstandingForeignSightLcPerCurrency">Outstanding_Foreign_Sight_LCs_per_Currency.pdf</option>
+				                <option value="runOutstandingForeignSightLcPerImporter">Outstanding_Foreign_Sight_LCs_per_Importer.pdf</option>
+				                <option value="runOutstandingForeignStandbyLcPerCurrency">Outstanding_Foreign_Standby_LCs_per_Currency.pdf</option>
+				                <option value="runOutstandingForeignStandbyLcPerImporter">Outstanding_Foreign_Standby_LCs_per_Importer.pdf</option>
+				                <option value="runOutstandingForeignUsanceLcPerCurrency">Outstanding_Foreign_Usance_LCs_per_Currency.pdf</option>
+				                <option value="runOutstandingForeignUsanceLcPerImporter">Outstanding_Foreign_Usance_LCs_per_Importer.pdf</option>
+				                <option value="runOutstandingInwardBillsForCollectionDmDaDpPerCurrency">Outstanding_Inward_Bills_For_Collection_Dm_Dp_Per_Currency.pdf</option>
+								<option value="runOutstandingInwardBillsForCollectionFxDaDpPerCurrency">Outstanding_Inward_Bills_For_Collection_Fx_Da_Dp_Oa_Dr_Per_Currency.pdf</option>
+				                <option value="runOutstandingInwardBillsforCollectionFXLCperCurrency">Outstanding_Inward_Bills_for_Collection_FXLC_per_Currency.pdf</option>
+				                <option value="runOutstandingMarginalDepositsReport">Outstanding_Marginal_Deposits.pdf</option>				                
+				                <option value="runProductAvailmentsReport">Product_Availments_Exception_Report.xls</option>
+				                <option id="notException" class="productAvailReportType" value="runProductAvailmentsReport">Product_Availments_Report.xls</option>
+				                <option value="runProfitabilityMonitoringReport">Profitability_Monitoring_Exception_Report.xls</option>
+				                <option id="notException" class="profitMonitoringReportType" value="runProfitabilityMonitoringReport">Profitability_Monitoring_Report.xls</option>
+				                <option value="runTfsMcoReport">Tfs_Mco_Report.xls</option>
+				                <option value="runTfsMcoReportSpecial">Second Day Tfs_Mco_Report.xls</option>
+								<option value="runVolumetrics">Volumetrics_Report.pdf</option>
+				                <option value="runYtdReportOnDomesticLcOpened">YTD_Report_on_Domestic_LCs_Opened.pdf</option>
+				                <option value="runYtdReportOnDomesticLcOpenedClassifiedByBank">YTD_Report_on_Domestic_LCs_Opened_Classified_by_top_30_Importer_and_Advising_Local_Bank_in_PHP.pdf</option>
+				                <option value="runYtdReportOnForeignLcOpened">YTD_Report_on_Foreign_LCs_Opened.pdf</option>
+				                <option value="runYtdReportOnForeignLcOpenedClassifiedByBank">YTD_Report_on_Foreign_LCs_Opened_Classified_by_top_30_Importer_and_Advising_Bank_in_USD.pdf</option>
+				            </optgroup>
+							<optgroup label="Quarterly">
+								<option value="runApOthers">AP_Others.pdf</option>
+		            			<option value="runArOthers">AR_Others.pdf</option>
+								<option id="report" class="cbReportType" value="runCredexReport">CREDEX_Report.pdf</option>
+		            			<option id="text" class="cbReportType" value="runCredexReport">FORM4.xls</option>
+		            			<option value="runQuarterlyReportOnForeignStandybyLcsOpened">Quarterly_Report_on_Foreign_Standby_LCs_Opened.pdf</option>
+							</optgroup>
+							<optgroup label="Yearly">
+								<option value="runYearEndReportOnForeignLcsOpenedPerAdvisingBank">Year_End_Report_on_Foreign_LCS_Opened_per_Advising_Bank.pdf</option>
+								<option value="runYearEndReportOnForeignLcsOpenedPerConfirmingBank">Year_End_Report_on_Foreign_LCS_Opened_per_Confirming_Bank.pdf</option>
+								<option value="runYearEndReportOnForeignLcsOpenedPerCountry">Year_End_Report_on_Foreign_LCS_Opened_per_Country.pdf</option>
+								<option value="runYtdCustomsDutiesAndTaxesAndOtherLevies">YTD_Customs_Duties_And_Taxes_And_Other_Levies.pdf</option>
+								<option value="runYtdTransactionCountImportExportReport">YTD_Transaction_Count_Import_and_Export.pdf</option>
+							</optgroup>
+						</select>
+						<br/>
+			            <input type="button" class="batch_button" value="Execute" id="generateAdhoc"/>
+		            </div>
+				</fieldset>
+        	</form>
+			<g:render template="../layouts/loading"/>    
+			<g:render template="../layouts/alert"/>    
+			<g:render template="../layouts/confirm_alert"/>    
+			<g:render template="../commons/popups/online_reports_popup"/>
+        </div>
+    </div>
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         

@@ -1,0 +1,87 @@
+diff --git a/grails-app/conf/BuildConfig.groovy b/grails-app/conf/BuildConfig.groovy
+--- a/grails-app/conf/BuildConfig.groovy
++++ b/grails-app/conf/BuildConfig.groovy
+@@ -22,6 +22,7 @@
+         grailsHome()
+         grailsCentral()
+         mavenCentral()
++        mavenRepo "file:/D:/m2/repository"
+ 
+         // uncomment these to enable remote dependency resolution from public Maven repositories
+         //mavenCentral()
+@@ -30,6 +31,9 @@
+         //mavenRepo "http://repository.codehaus.org"
+         //mavenRepo "http://download.java.net/maven/2/"
+         //mavenRepo "http://repository.jboss.com/maven2/"
++
++        mavenRepo "https://repo.grails.org/grails/core" 
++        mavenRepo "https://repo.grails.org/grails/plugins"  
+     }
+     dependencies {
+         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+diff --git a/grails-app/controllers/com/ucpb/tfsweb/batch/BatchController.groovy b/grails-app/controllers/com/ucpb/tfsweb/batch/BatchController.groovy
+--- a/grails-app/controllers/com/ucpb/tfsweb/batch/BatchController.groovy
++++ b/grails-app/controllers/com/ucpb/tfsweb/batch/BatchController.groovy
+@@ -78,6 +78,19 @@
+ 	Project Name: BatchController
+  *
+  */
++
++ /*PROLOGUE:
++ * 	(revision)
++	SCR/ER Number: 
++	SCR/ER Description: 
++	[Revised by:] Crystiann Puso
++	[Date Revised:] 02/22/2024
++	Program [Revision] Details: Added methods for running Process Cicls and Generate Cicls File
++	PROJECT: WEB
++	MEMBER TYPE  : Groovy
++	Project Name: BatchController
++ *
++ */
+  
+ class BatchController {
+ 
+diff --git a/grails-app/views/batch/index.gsp b/grails-app/views/batch/index.gsp
+--- a/grails-app/views/batch/index.gsp
++++ b/grails-app/views/batch/index.gsp
+@@ -96,6 +96,18 @@
+     Project Name: index
+  
+  -->
++
++   <!--
++ 
++ *  (revision)
++    [Revised by:] Prochina, Crystiann Puso
++    [Date Revised:] 02/23/2024
++    Program [Revision] Details: Added Process Cicls and Generate Cicls File Interface.
++    PROJECT: WEB
++    MEMBER TYPE  : GSP
++    Project Name: index
++ 
++ -->
+  
+   <head>
+     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+diff --git a/web-app/js/batch/batch_events.js b/web-app/js/batch/batch_events.js
+--- a/web-app/js/batch/batch_events.js
++++ b/web-app/js/batch/batch_events.js
+@@ -84,6 +84,17 @@
+ 		Project Name: batch_event.js
+ 	 *
+ 	 */
++
++	/*PROLOGUE:
++	 * 	(revision)
++		[Revised by:] Crystiann Puso
++		[Date Revised:] 02/22/2024
++		Program [Revision] Details: Added case and function to process cicls and generate cicls file.
++		PROJECT: WEB
++		MEMBER TYPE  : Javascript
++		Project Name: batch_event.js
++	 *
++	 */
+ 	
+ 	var batchId="";
+ 	

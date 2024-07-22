@@ -1,0 +1,333 @@
+package com.ucpb.tfsweb.batch
+
+import grails.converters.JSON
+import java.text.SimpleDateFormat
+import net.ipc.utils.DateUtils
+
+	/*	PROLOGUE:
+ * 	(revision)
+	SCR/ER Number: 20150820-072
+	SCR/ER Description: To separate update allocation with interfaceFiles.
+	[Revised by:] Jesse James Joson
+	[Date revised:] 10/13/2015
+	Program [Revision] Details: add a response whether to failed in UI or Success.
+	PROJECT: Web
+	MEMBER TYPE  : Groovy
+	Project Name: BatchController
+ */
+
+/*  PROLOGUE:
+ * 	(revision)
+	SCR/ER Number: SCR IBD-16-0219-01
+	SCR/ER Description: Generate CIC File
+	[Revised by:] Jesse James Joson
+	[Date Deployed:] 02/24/2016
+	Program [Revision] Details: Add some methods for execution of CIC file
+	PROJECT: WEB
+	MEMBER TYPE  : Groovy
+	Project Name: BatchController
+ */
+ 
+ 
+ /*  PROLOGUE:
+ * 	(revision)
+	SCR/ER Number: 
+	SCR/ER Description: 
+	[Revised by:] Allan Comboy Jr.
+	[Date Deployed:] 06/07/2016
+	Program [Revision] methods to check Sibs
+	PROJECT: WEB
+	MEMBER TYPE  : Groovy
+	Project Name: BatchController
+ */
+
+/*  PROLOGUE:
+ * 	(revision)
+	SCR/ER Number:20160623-080
+	SCR/ER Description:
+	[Revised by:] Allan Comboy Jr.
+	[Date Deployed:] 06/24/2016
+	Program [Revision] methods to check Sibs for CREDEX AND FORM4
+	PROJECT: WEB
+	MEMBER TYPE  : Groovy
+	Project Name: BatchController
+ */
+ 
+/**PROLOGUE:
+ * 	(revision)
+	SCR/ER Number: ER# 20140909-038
+	SCR/ER Description: CIF Normalization Not Working in TFS
+	[Revised by:] Jesse James Joson
+	[Date Created:] 08/05/2016
+	Program [Revision] Details: The CIF Normalization was redesigned, since not all tables are normalized. Add method for the CIF Extraction.
+	PROJECT: WEB
+	MEMBER TYPE  : Groovy
+	Project Name: BatchController
+ *
+ */
+
+/*PROLOGUE:
+ * 	(revision)
+	SCR/ER Number: SCR# IBD-16-0615-01
+	SCR/ER Description: To comply with the requirement for CIF archiving/purging of inactive accounts in TFS.
+	[Revised by:] Jesse James Joson
+	[Date Revised:] 09/22/2016
+	Program [Revision] Details: additional methods to run account purging
+	PROJECT: WEB
+	MEMBER TYPE  : Groovy
+	Project Name: BatchController
+ *
+ */
+
+ /*PROLOGUE:
+ * 	(revision)
+	SCR/ER Number: 
+	SCR/ER Description: 
+	[Revised by:] Crystiann Puso
+	[Date Revised:] 02/22/2024
+	Program [Revision] Details: Added methods for running Process Cicls and Generate Cicls File
+	PROJECT: WEB
+	MEMBER TYPE  : Groovy
+	Project Name: BatchController
+ *
+ */
+ 
+class BatchController {
+
+    def coreAPIService
+	def batchService
+	
+    def index() {
+        render (view: "/batch/index")
+    }
+
+    def view() {
+        render (view: "/batch/index",model:chainModel ?: [:])
+    }
+
+    def interfaceFiles(){
+		ArrayList<String> methodNames = ['expiredAmla',
+										'synchronizeRoutingStatus',
+										'abortPendingEtsReversal',
+//										'revertToPending',
+										'purgeEts',
+										'tagAsPending',
+										'etsToPending',
+										//uncomment this when for revision of Sec_employee_audit
+//										'purgeSecEmployeeAudit',
+										//'transaction',
+										//'account',
+										//'customerAccount',
+										//'customer',
+										'gl',
+										'cifPurging',
+										'processRmaDocument'
+										]
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+    }
+
+    def glis(){
+		ArrayList<String> methodNames = ['glis']
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+    }
+
+    def cicls(){
+		ArrayList<String> methodNames = ['processCicls', 'generateCiclsFile']
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+    }
+	
+	def sibsInterfaceFiles(){
+		ArrayList<String> methodNames = ['extractSibs'
+										]
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	// Start IBD-16-0219-01
+	
+	def cicInterfaceFiles(){
+		ArrayList<String> methodNames = ['extractCic'
+										]
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	def cicInterfaceFiles2(){
+		ArrayList<String> methodNames = ['extractCicHistorical'
+										]
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	// End IBD-16-0219-01
+	
+	def updateAllocation(){
+		println ("Now Starting in Update Allocation - " + new Date())
+		ArrayList<String> methodNames = ['updateAllocationUnitCode'
+										]
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		
+		println ("Now Rendering JSON in Update Allocation" + new Date())
+		
+		render jsonParams as JSON
+	}
+	
+	def interfaceAmlaFiles(){
+		
+		println "IM HERE interfaceAmlaFiles"
+		ArrayList<String> methodNames = ['transaction',
+										'account',
+										'customerAccount',
+										'customer'
+										
+										]
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	def cifNormalization(){
+		ArrayList<String> methodNames = ['cifNormalization'] 
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	// ER# 20140909-038 : Start
+	def cifNormalization2(){
+		ArrayList<String> methodNames = ['cifNormalization2']
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	// ER# 20140909-038 : End
+	def cifPurging() {
+		ArrayList<String> methodNames = ['cifPurging']
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	def rerouteTradeServiceJob() {
+		ArrayList<String> methodNames = ['rerouteTradeServiceJob']
+		def jsonParams = [successList:batchService.executeReRouteApprover(params, methodNames)]
+		render jsonParams as JSON
+	}
+
+
+	
+	def afterReportInterface(){
+		ArrayList<String> methodNames = ['balance',
+										'master',
+										'masterException',
+										'dw',
+										'cbr',
+										'params',
+										'revalueEarmark',
+										'revalueLoans',
+										]
+										
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	def jsonCurrentTime(){
+		def jsonParams = ["time":DateUtils.timeFormat(new Date())]
+		render jsonParams as JSON
+	}
+
+	
+	
+	
+    def populateCasaAccounts(){
+        println "populating casa accounts"
+        def passedParams= [:]
+        def successList=[]
+        def returnValue= coreAPIService.dummySendQuery(passedParams, "refCasaAccount/extractFromCasaFile")
+
+        if(returnValue.success){
+            successList.add(returnValue.name)
+        }
+
+        def jsonParams = [successList:successList]
+        render jsonParams as JSON
+    }
+	
+	def masterException() {
+		ArrayList<String> methodNames = ['masterException']
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	def allocationException() {
+		ArrayList<String> methodNames = ['allocationException']
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	def allocation(){
+		ArrayList<String> methodNames = ['allocation','allocationException']
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+
+	def yearEndInterfaceFiles(){
+		ArrayList<String> methodNames = ['yearEndInsert'
+										]
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+
+	def yearEndHolidays(){
+		ArrayList<String> methodNames = ['yearEndHolidays']
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	//Start IBD-16-0615-01
+	def cifPurgingInterfaceFiles(){
+		ArrayList<String> methodNames = ['cifPurgingPhase1'
+										]
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	def cifPurgingInterfaceFiles2(){
+		ArrayList<String> methodNames = ['cifPurgingPhase2'
+										]
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	def cifPurgingInterfaceFiles3(){
+		ArrayList<String> methodNames = ['cifPurgingPhase3'
+										]
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	//End IBD-16-0615-01
+	def timeThread(){
+	
+		ArrayList<String> singleMethod = ['sibsTimer'
+										 ]
+
+		def jsonParams = [successList:batchService.testMeth(params, singleMethod)]	
+	
+	
+		   
+		render jsonParams as JSON
+
+
+	
+	}
+	
+	def executeDailyItrs(){
+		ArrayList<String> methodNames = ['extractItrs'
+										]
+		def jsonParams = [successList:batchService.executeInterfaceMethods(params, methodNames)]
+		render jsonParams as JSON
+	}
+	
+	def retrieveInterfaceDirectories(){
+		def jsonParams = [directories:batchService.getInterfaceDirectories()]
+		render jsonParams as JSON
+	}
+}

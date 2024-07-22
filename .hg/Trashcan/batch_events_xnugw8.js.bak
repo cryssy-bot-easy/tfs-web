@@ -1,0 +1,405 @@
+$(function(){
+	var batchId="";
+	
+	$(".batch_button").click(function(){
+	var reportName = $("#adhoc_dropdown option:selected").val();
+		batchId = $(this).attr("id");
+		fieldIdToChangeTime = $(this).parents("div").attr("id");
+		if(fieldIdToChangeTime == "adhoc"){
+			fieldIdToChangeTime = "adHoc";
+			$(".are_you_sure").text("Execute " + $("#adhoc_dropdown option:selected").text() + "?");
+			//online_reports_popup.js
+			if(reportName=="expiredAmla"){
+				openAdhocBatchReportPopupBetween();
+			}else{
+				openAdhocBatchReportPopup();
+				
+			}
+
+		}else{
+			$(".are_you_sure").text("Execute " + $("#" + fieldIdToChangeTime).siblings(".duration").text() +
+					" " + $(this).siblings("label").text() + "?");
+			showConfirmPopup(); 
+		}
+	});
+	
+	$("#btnAlertConfirm").click(function(){
+		mDisablePopup($("#popup_save_confirmation"),$("#confirmation_background"));
+		var reportName="";
+		if(batchId != "generateAdhoc"){
+			//disable button
+			$("#"+batchId).attr("disabled","disabled");
+		}else{
+			reportName= $("#adhoc_dropdown option:selected").text();
+		}
+		setTimeStart(fieldIdToChangeTime,reportName);
+		switch(batchId){
+			case "generateDailyAmlaInterface":
+				generateDailyAmlaInterface();
+				break;
+			case "executeCifNormalization":
+				executeCifNormalization();
+				break;
+            case "executeCloningLnappf":
+                executeCloneLnappf();
+                break;
+            case "executePopulateCasaAccounts":
+                executePopulateCasaAccounts();
+                break;
+			case "generateDailyInterface":
+				generateDailyInterface();
+				break;
+			case "generateDailyBatchReports":
+				generateDailyBatchReports();
+				break;
+			case "generateSpecialMco":
+				generateSpecialMco();
+				break;
+			case "generateMonthEndMco":
+				generateMonthEndMco();
+				break;
+			case "generateWeeklyBatchReports":
+				generateWeeklyBatchReports();
+				break;
+			case "generateMonthlyBatchReports":
+				generateMonthlyBatchReports();
+				break;
+			case "generateQuarterlyBatchReports":
+				generateQuarterlyBatchReports();
+				break;
+			case "generateYearlyBatchReports":
+				generateYearlyBatchReports();
+				break;
+			case "generateAdhoc":
+				generateSelectedAdhoc();
+				break;
+            case "executeGlMovement":
+            	executeGlMovement();
+            	break;
+            case "processRefBank":
+            	processRefBanks();
+            	break;
+            case "processRmaDocument":
+            	processRmaDocument();
+            	break;
+            case "executeAllocationFile":
+            	executeAllocationFile();
+            	break;
+            case "updateTransactionRouting":
+            	updateTransactionRouting();
+            	break;
+            case "executeUpdateAllocationUnitCode":
+            	executeUpdateAllocationUnitCode();
+            	break;
+            case "executeAfterReportInterface":
+            	executeAfterReportInterface();
+            	break;
+			case "generateSibsInterface":
+				generateSibsInterface();
+				break;
+			case "generateDailySummaryOfDW":
+				generateDailySummaryOfDW();
+				break;
+            default:
+				triggerAlertMessage("Javascript Error: No ID for this action");
+		}
+	});
+	
+	$("#btnAlertOk").click(function(){
+		mDisablePopup($("#popup_alert_dv"),$("#popup_alert_bg"));
+	});
+
+	$("#btnAlertNo").click(function(){
+		mDisablePopup($("#popup_save_confirmation"),$("#confirmation_background"));
+	});
+});
+
+function executeAfterReportInterface(){
+	var batchUrl = afterReportInterfaceUrl;
+	var params = { adhoc:'true',methodName:'ohsiiiii',onlineReportDate:currentDate, code: 'cryssyyyyyyyyyyyyyyyy'};
+	executeBatchAction(batchUrl,params,"afterReportInterface");
+}
+
+function executeUpdateAllocationUnitCode(){
+	var batchUrl = updateAllocationUrl;
+	var params = {};
+	executeBatchAction(batchUrl,params,"updateAllocationUnitCode");
+}
+
+function processRefBanks(){
+	var batchUrl = interfaceUrl;
+	var params = {adhoc:'true',methodName:'processRefBanks'};
+	executeBatchAction(batchUrl,params,"refBankDiv");
+}
+
+function executeCifNormalization(){
+	var batchUrl = cifNormalizationUrl;
+	var params = {};
+	executeBatchAction(batchUrl,params,"special");
+}
+
+function executeCloneLnappf(){
+    var batchUrl = interfaceUrl;
+    var params = {adhoc:'true',methodName:'cloneLnappf'};
+    executeBatchAction(batchUrl,params,"specialCloneLnappf");
+}
+
+function executePopulateCasaAccounts(){
+    var batchUrl = populateCasaAccountsUrl;
+    var params = {};
+    executeBatchAction(batchUrl,params,"specialPopulateCasaAccounts");
+}
+
+function executeAllocationFile(){
+	var batchUrl = allocationUrl;
+	var params = {onlineReportDate:currentDate};
+	executeBatchAction(batchUrl,params,"allocationFileDiv");
+}
+
+function updateTransactionRouting(){
+	var batchUrl = interfaceUrl;
+	var params = {adhoc:'true',methodName:'updateTransactionRouting'};
+	executeBatchAction(batchUrl,params,"updateTransactionRoutingDiv");
+}
+
+function generateDailyInterface(){
+	var batchUrl = interfaceUrl;
+	var params = {};
+	executeBatchAction(batchUrl,params,"interface");
+}
+
+function generateMonthEndMco(){
+	var batchUrl = batchReportIndividualUrl;
+	batchUrl+="?callback=?";
+	var params = {duration:'monthEndMcoDiv',inv:'batch',onlineReportDate:currentDate,branchUnitCode:branchUnitCode,
+			branchUnitName:branchUnitName,methodName:'runTfsMcoReport'};
+	executeBatchAction(batchUrl,params,"monthEndMcoDiv");
+}
+
+function generateSpecialMco(){
+	var batchUrl = specialMcoUrl;
+	batchUrl+="?callback=?";
+	var params = {duration:'specialMcoDiv',inv:'batch',onlineReportDate:currentDate};
+	executeBatchAction(batchUrl,params,"specialMcoDiv");
+}
+
+function generateDailyBatchReports(){
+	var batchUrl = batchReportUrl;
+	batchUrl+="?callback=?";
+	var params = {duration:'daily',inv:'batch',onlineReportDate:currentDate,branchUnitCode:branchUnitCode,branchUnitName:branchUnitName};
+	executeBatchAction(batchUrl,params,"daily");
+}
+
+function generateWeeklyBatchReports(){
+	var batchUrl = batchReportUrl;
+	batchUrl+="?callback=?";
+	var params = {duration:'weekly',inv:'batch',onlineReportDate:currentDate,branchUnitCode:branchUnitCode,branchUnitName:branchUnitName};
+	executeBatchAction(batchUrl,params,"weekly");
+}
+
+function generateMonthlyBatchReports(){
+	var batchUrl = batchReportUrl;
+	batchUrl+="?callback=?";
+	var params = {duration:'monthly',inv:'batch',onlineReportDate:currentDate,branchUnitCode:branchUnitCode,branchUnitName:branchUnitName};
+	executeBatchAction(batchUrl,params,"monthly");
+}
+
+function generateQuarterlyBatchReports(){
+	var batchUrl = batchReportUrl;
+	batchUrl+="?callback=?";
+	var params = {duration:'quarterly',inv:'batch',onlineReportDate:currentDate,branchUnitCode:branchUnitCode,branchUnitName:branchUnitName};
+	executeBatchAction(batchUrl,params,"quarterly");
+}
+
+function generateYearlyBatchReports(){
+	var batchUrl = batchReportUrl;
+	batchUrl+="?callback=?";
+	var params = {duration:'yearly',inv:'batch',onlineReportDate:currentDate,branchUnitCode:branchUnitCode,branchUnitName:branchUnitName};
+	executeBatchAction(batchUrl,params,"yearly");
+}
+function generateDailyAmlaInterface(){
+	var batchUrl = interfaceAmlaUrl;
+	var params = {};
+	executeBatchAction(batchUrl,params,"interfaceDailyAmla");
+}
+
+function generateSibsInterface(){
+	var batchUrl = sibsInterfaceUrl;
+	var params = {};
+	executeBatchAction(batchUrl,params,"sibsInterface");
+}
+
+function generateDailySummaryOfDW(){
+	var batchUrl = batchReportUrl;
+	batchUrl+="?callback=?";
+	var params = {duration:'dailySummary',inv:'batch',onlineReportDate:currentDate,branchUnitCode:branchUnitCode,branchUnitName:branchUnitName};
+	executeBatchAction(batchUrl,params,"DailySummaryOfDW");
+}
+
+
+function executeBatchAction(batchUrl,params,category){
+	centerPopup("loading_div", "loading_bg");
+	loadPopup("loading_div", "loading_bg");
+
+	$.getJSON(batchUrl,params,function(data){
+		console.log(data, 'heyyyyyyyyyyyyyyyyyyyyyy yowwwwwwwwwwwwwwwww')
+
+		if(data.successList){
+			var successList = typeof data.successList == "object" ? data.successList : data.successList.split(",");
+			$.each($("div#" + category + " span"),function(idx,val){
+				if($.inArray($.trim($(this).text()),successList) != -1){
+					$(this).text($(this).text() + " - SUCCESS").addClass("success");
+				}
+			});
+		}
+
+		$.each($("div#" + category + " span"),function(idx,val){
+			if(!$(this).hasClass("failed") && !$(this).hasClass("success") ){
+				if($(this).text()=="GL Movement"){
+					$(this).text($(this).text() + " - Warnng: GL Movement file successfully generated but GL entries are not balance. Please call ITD Support").addClass("failed");	
+				}else{
+					$(this).text($(this).text() + " - FAILED").addClass("failed");
+				}
+			}
+		});
+		disableLoading();
+	}).fail(function(){
+		disableLoading();
+		alert("Critical Error: Function failed to return result.");
+	});
+}
+
+function generateSelectedAdhoc(){
+	var batchUrl;
+	
+	centerPopup("loading_div", "loading_bg");
+	loadPopup("loading_div", "loading_bg");
+	console.log('hey fooooooooooollllllllllllll')
+	if($("#adhoc_dropdown option:selected").hasClass("interface")){
+		batchUrl = interfaceUrl;
+		$.getJSON(batchUrl,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+			onlineReportDate:$("#onlineReportDate").val()},adHocActionResult).fail(function(){
+				console.log('aaaaaaaaaaaaaaaaaaaaasiiiiiiiiiiiiiimmmmmmmmmmmmmm')
+			disableLoading();
+			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call interface method.</span>");
+		});
+	}else if($("#adhoc_dropdown option:selected").hasClass("interface2")){
+		batchUrl = interfaceUrl;
+		$.getJSON(batchUrl,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+			dateOfTransactionFrom:$("#dateOfTransactionFrom").val(),dateOfTransactionTo:$("#dateOfTransactionTo").val(),interface2Check:true},adHocActionResult).fail(function(){
+			disableLoading();
+			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call interface method.</span>");
+		});
+	}else if($("#adhoc_dropdown option:selected").hasClass("CASA")){
+		batchUrl = populateCasaAccountsUrl;
+		$.getJSON(batchUrl,adHocActionResult).fail(function(){
+			disableLoading();
+			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call interface method.</span>");
+		});
+	}else if($("#adhoc_dropdown option:selected").hasClass("CIFPURGING")){
+		batchUrl = cifPurgingUrl;
+		$.getJSON(batchUrl,adHocActionResult).fail(function(){
+			disableLoading();
+			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call interface method.</span>");
+		});
+	}else if($("#adhoc_dropdown option:selected").hasClass("MASTEREXCEPTION")){
+		batchUrl = masterExceptionUrl;
+		$.getJSON(batchUrl,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+			onlineReportDate:$("#onlineReportDate").val()},adHocActionResult).fail(function(){
+			disableLoading();
+			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call interface method.</span>");
+		});
+	}else if($("#adhoc_dropdown option:selected").hasClass("ALLOCATIONEXCEPTION")){
+		batchUrl = allocationExceptionUrl;
+		$.getJSON(batchUrl,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+			onlineReportDate:$("#onlineReportDate").val()},adHocActionResult).fail(function(){
+			disableLoading();
+			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call interface method.</span>");
+		});
+	}else if($("#adhoc_dropdown option:selected").hasClass("sibsInterface")){
+		batchUrl = sibsInterfaceUrl;
+		$.getJSON(batchUrl,{adhoc:'true',methodName:$("#adhoc_dropdown option:selected").val(),
+			onlineReportDate:$("#onlineReportDate").val()},adHocActionResult).fail(function(){
+			disableLoading();
+			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call interface method.</span>");
+		});
+	}else{
+		batchUrl = batchReportIndividualUrl;
+		batchUrl+="?callback=?";
+		var parameters= {inv:'batch',onlineReportDate:$("#onlineReportDate").val(),
+				branchUnitCode:branchUnitCode,branchUnitName:branchUnitName,methodName:$("#adhoc_dropdown option:selected").val()};
+		if(typeof $("#adhoc_dropdown option:selected").attr("id") !== 'undefined' &&
+			 typeof $("#adhoc_dropdown option:selected").attr("class") !== 'undefined'){
+			var param = {};
+			// format: object = {'class':'id'}
+			param[$("#adhoc_dropdown option:selected").attr("class")] = $("#adhoc_dropdown option:selected").attr("id");
+			$.extend(parameters,param);
+		}	
+		$.getJSON(batchUrl,parameters,adHocActionResult).fail(function(){
+			disableLoading();
+			triggerAlertMessage("<span class='failed'>Critical Error: Failed to call report method.</span>");
+		});
+	}
+}
+
+function adHocActionResult(data){
+	if('undefined' !== typeof data.successList && data.successList.length > 0){
+		adHocReportStatus="SUCCESS";
+		disableLoading();
+		triggerAlertMessage("<span class='success'>Successfully executed : "+ $("#adhoc_dropdown option:selected").text() + "</span>");
+	}else{
+		adHocReportStatus="FAILED";
+		disableLoading();
+		triggerAlertMessage("<span class='failed'>Error in executing : "+$("#adhoc_dropdown option:selected").text()  + "</span>");
+	}
+}
+
+function showConfirmPopup(){
+	$("#popup_save_confirmation").css("width","70%");
+	mCenterPopup($("#popup_save_confirmation"),$("#confirmation_background"));
+	mLoadPopup($("#popup_save_confirmation"),$("#confirmation_background"));
+}
+
+function disableLoading(){
+	disablePopup("loading_div", "loading_bg");
+	setTimeEnd(fieldIdToChangeTime);
+}
+
+function setTimeStart(timeElementId,reportName){
+	$.get(currentTimeUrl,function(data){
+		$("#"+ timeElementId + " label#start").text("Time Start: " + data.time);
+	}).fail(function(){
+		var dt=new Date();
+		$("#"+ timeElementId + " label#start").text("Time Start*: " + dt.getHours() + 
+				":" + dt.getMinutes() + ":" + dt.getSeconds());
+	});
+	
+	if(reportName != ""){
+		$("#"+ timeElementId + " label#reportName").text("Name: " + reportName);
+	}
+}
+
+function setTimeEnd(timeElementId){
+	$.get(currentTimeUrl,function(data){
+		$("#"+ timeElementId + " label#end").text("Time End: " + data.time);
+	}).fail(function(){
+		var dt=new Date();
+		$("#"+ timeElementId + " label#end").text("Time End*: " + dt.getHours() + 
+				":" + dt.getMinutes() + ":" + dt.getSeconds());
+	});
+	
+	if(adHocReportStatus != ""){
+		$("#"+ timeElementId + " label#reportStatus").text("Status: " + adHocReportStatus);
+		adHocReportStatus="";
+	}
+}
+
+function triggerAlertMessage(alertMessage) {
+    var mSave_div = $("#popup_alert_dv");
+    var mBg = $("#popup_alert_bg");
+    $("#alertMessage").html(alertMessage);
+    $("#popup_alert_dv").css("width","50%");
+    mCenterPopup(mSave_div, mBg);
+    mLoadPopup(mSave_div, mBg);
+    $("#btnAlertOk").focus();
+}

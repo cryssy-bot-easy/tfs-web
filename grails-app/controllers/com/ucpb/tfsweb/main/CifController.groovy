@@ -1,0 +1,153 @@
+package com.ucpb.tfsweb.main
+
+import grails.converters.JSON
+
+class CifController {
+
+    def cifService
+    def coreAPIService
+	
+	def validateCifCDT(){
+		println "Validate CIF CDT" + params
+		
+		Map<String, Object> mapList
+		
+		mapList = cifService.findCifByCifInCDT(params)
+		
+		def jsonData = [sibsStatus: mapList.sibsStatus]
+		
+		render jsonData as JSON
+	}
+	
+    def searchCif() {
+
+        def maxRows = params.int('rows') ?: 10
+        def currentPage = params.int('page') ?: 1
+        def rowOffset = currentPage == 1 ? 0 : (currentPage - 1) * maxRows
+
+        params.unitcode = session.unitcode;
+		println "unitcode = " + params.unitcode
+
+        Map<String, Object> mapList
+
+		println "flash.tempResult.length()" + flash?.tempResult?.size()
+		if(flash?.tempResult && (flash?.tempResult?.param?.cifName == params?.cifName && flash?.tempResult?.param?.cifNumber == params?.cifNumber && flash?.tempResult?.param?.unitcode == params?.unitcode)){
+			mapList = cifService.findCifsByCache(maxRows, rowOffset, currentPage, flash.tempResult.queryResult)
+		} else {
+			mapList = cifService.findCifsByCifNameAndNumber(maxRows, rowOffset, currentPage, params)
+		}
+
+		flash.tempResult = [param: params, queryResult: mapList?.queryResult]
+        def totalRows = mapList.totalRows
+        def numberOfPages = Math.ceil(totalRows / maxRows)
+
+        def results
+        if (params.normal?.equals("true")) {
+            results = cifService.constructCifTableNormal(mapList.display)
+        } else {
+            results = cifService.constructCifTable(mapList.display)
+        }
+
+
+        def jsonData = [rows: results, page: currentPage, records: totalRows, total: numberOfPages]
+        render jsonData as JSON
+    }
+	
+    def resetCif() {
+		flash.tempResult = null
+		println "flash parameters reset"
+		def jsonData = [success: flash.tempResult == null]
+		render jsonData as JSON
+	}
+    
+    def searchMainCifByCif() {
+        def maxRows = params.int('rows') ?: 10
+        def currentPage = params.int('page') ?: 1
+        def rowOffset = currentPage == 1 ? 0 : (currentPage - 1) * maxRows
+
+        def mapList = cifService.findMainCifsByCifNumber(maxRows, rowOffset, currentPage, params)
+
+        def totalRows = mapList.totalRows
+        def numberOfPages = Math.ceil(totalRows / maxRows)
+        def results = cifService.constructMainCifTable(mapList.display)
+
+        def jsonData = [rows: results, page: currentPage, records: totalRows, total: numberOfPages]
+        render jsonData as JSON
+    }
+
+    def searchCifByMainCif() {
+        def maxRows = params.int('rows') ?: 10
+        def currentPage = params.int('page') ?: 1
+        def rowOffset = currentPage == 1 ? 0 : (currentPage - 1) * maxRows
+		
+		params.unitcode = session.unitcode;
+
+        def mapList = cifService.findMainCifsByCifNumber(maxRows, rowOffset, currentPage, params)
+
+        def totalRows = mapList.totalRows
+        def numberOfPages = Math.ceil(totalRows / maxRows)
+        def results = cifService.constructCifTable(mapList.display)
+
+        def jsonData = [rows: results, page: currentPage, records: totalRows, total: numberOfPages]
+        render jsonData as JSON
+    }
+
+//    def searchCasaAccountsByCif(){
+//        println"searching casa accounts..."
+//        println params
+//        def resultsList = []
+//
+//        def casaAccounts = cifService.findCasaAccountsFromCif(params.cifNumber, params.currency)
+//
+//        //printlncasaAccounts;
+//
+//        def temp = []
+//        casaAccounts.each {
+//            temp << ["id": it.ACCOUNT_NUMBER.toString(), "label": it.CIF_NAME.trim()]
+//        }
+//
+//        temp.each{
+//            if(it.id.toUpperCase().contains(params.starts_with)){
+//                resultsList << it
+//            }
+//        }
+//
+//        def jsonData = ['success':true, 'results':resultsList, 'total':resultsList.size()]
+//        render jsonData as JSON
+//
+//    }
+
+    // TODO:
+    def searchCasaAccountsByCif(){
+        println"searching casa accounts v2..."
+        println "params " + params
+
+        def resultsList = []
+
+        def casaAccounts = coreAPIService.dummySendQuery([cifNumber: params.cifNumber, currency: params.currency], "findCasaAccountsFromCif", "refCasaAccount/")?.response
+        println "casaAccounts " + casaAccounts
+
+        def temp = []
+        casaAccounts.each {
+            temp << ["id": it.accountNumber.toString(), "label": it.accountName.trim()]
+        }
+
+        temp.each{
+            if(it.id.toUpperCase().contains(params.starts_with)){
+                resultsList << it
+            }
+        }
+
+        def jsonData = ['success':true, 'results':resultsList, 'total':resultsList.size()]
+        render jsonData as JSON
+    }
+	
+	def searchCbCodeByCif(){
+		def cbCode = cifService.findCbCodeFromCif(params.cifNumber)
+		if(!cbCode) {
+			render {CBCODE: ''} as JSON
+		} else {
+			render cbCode as JSON
+		}
+	}
+}

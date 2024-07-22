@@ -1,0 +1,254 @@
+diff --git a/grails-app/conf/BuildConfig.groovy b/grails-app/conf/BuildConfig.groovy
+--- a/grails-app/conf/BuildConfig.groovy
++++ b/grails-app/conf/BuildConfig.groovy
+@@ -22,6 +22,7 @@
+         grailsHome()
+         grailsCentral()
+         mavenCentral()
++        mavenRepo "file:/D:/m2/repository"
+ 
+         // uncomment these to enable remote dependency resolution from public Maven repositories
+         //mavenCentral()
+@@ -30,6 +31,9 @@
+         //mavenRepo "http://repository.codehaus.org"
+         //mavenRepo "http://download.java.net/maven/2/"
+         //mavenRepo "http://repository.jboss.com/maven2/"
++
++        mavenRepo "https://repo.grails.org/grails/core" 
++        mavenRepo "https://repo.grails.org/grails/plugins"  
+     }
+     dependencies {
+         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+diff --git a/grails-app/services/com/ucpb/tfsweb/batch/BatchService.groovy b/grails-app/services/com/ucpb/tfsweb/batch/BatchService.groovy
+--- a/grails-app/services/com/ucpb/tfsweb/batch/BatchService.groovy
++++ b/grails-app/services/com/ucpb/tfsweb/batch/BatchService.groovy
+@@ -3,46 +3,8 @@
+ import java.text.SimpleDateFormat
+ import java.util.GregorianCalendar
+ 
+-
+-
+-/*  PROLOGUE:
+- * 	(revision)
+-	SCR/ER Number:  20160613-044
+-	SCR/ER Description: Program abnormally terminates during SIBS DB access time-out.
+-	[Revised by:] Allan Comboy Jr.
+-	[Date Deployed:]  06/14/2016
+-	Program [Revision] Details: to reconnect when disconnected to sibs (for 4 additional programs)
+-	PROJECT: WEB
+-	MEMBER TYPE  : Groovy
+-	Project Name: BatchServices
+- */
+-
+-/*  PROLOGUE:
+- * 	(revision)
+-	SCR/ER Number:  20160623-080
+-	SCR/ER Description: Program abnormally terminates during SIBS DB access time-out.
+-	[Revised by:] Allan Comboy Jr.
+-	[Date Deployed:]  06/14/2016
+-	Program [Revision] Details: for CREDEX and FORM 4
+-	PROJECT: WEB
+-	MEMBER TYPE  : Groovy
+-	Project Name: BatchServices
+- */
+-
+-/*  PROLOGUE:
+- * 	(revision)
+-	SCR/ER Number:  ER 20160905-019
+-	SCR/ER Description: Revert ets to pending cannot connect to SIBS.
+-	[Revised by:] Jesse James Joson
+-	[Date Deployed:]  10/13/2016
+-	Program [Revision] Details: The UI for auto reconnect is not functioning, revise a line to correct it.
+-	PROJECT: WEB
+-	MEMBER TYPE  : Groovy
+-	Project Name: BatchServices
+- */
+-
+ class BatchService {
+ 
+ 	def coreAPIService
+ 	
+ 	def executeInterfaceMethods(params,methodNames){
+@@ -44,11 +6,12 @@
+ class BatchService {
+ 
+ 	def coreAPIService
+ 	
+ 	def executeInterfaceMethods(params,methodNames){
++		
+ 		GregorianCalendar calendar = GregorianCalendar.getInstance()
+ 		SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy")
+ 		def passedParams
+ 		if(params.onlineReportDate != null){
+ 			passedParams = ['date':formatter.format(new SimpleDateFormat("MM/dd/yyyy").parse(params.onlineReportDate))]
+ 		}else{
+@@ -49,10 +12,10 @@
+ 		GregorianCalendar calendar = GregorianCalendar.getInstance()
+ 		SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy")
+ 		def passedParams
+ 		if(params.onlineReportDate != null){
+ 			passedParams = ['date':formatter.format(new SimpleDateFormat("MM/dd/yyyy").parse(params.onlineReportDate))]
+ 		}else{
+-			
++		
+ 			if(params.interface2Check!=null){
+ 				
+ 				if(params.interface2Check == "true"){
+@@ -56,10 +19,10 @@
+ 			if(params.interface2Check!=null){
+ 				
+ 				if(params.interface2Check == "true"){
+-			
++					
+ 					passedParams = ['dateFrom':formatter.format(new SimpleDateFormat("MM/dd/yyyy").parse(params.dateOfTransactionFrom))]
+ 					passedParams << ['dateTo':formatter.format(new SimpleDateFormat("MM/dd/yyyy").parse(params.dateOfTransactionTo))]
+ 				}
+ 			}else{
+ 				passedParams = ['date':formatter.format(calendar.getTime())]
+ 			}
+@@ -60,7 +23,8 @@
+ 					passedParams = ['dateFrom':formatter.format(new SimpleDateFormat("MM/dd/yyyy").parse(params.dateOfTransactionFrom))]
+ 					passedParams << ['dateTo':formatter.format(new SimpleDateFormat("MM/dd/yyyy").parse(params.dateOfTransactionTo))]
+ 				}
+ 			}else{
+ 				passedParams = ['date':formatter.format(calendar.getTime())]
+ 			}
++			
+ 		}
+@@ -66,5 +30,4 @@
+ 		}
+-		
+ 
+ 		ArrayList<String> methodNamesTemp = methodNames
+ 		
+@@ -73,6 +36,5 @@
+ 			methodNamesTemp.add(params.methodName)
+ 		}
+ 		def returnValue;
+-		def successList=[]
+-
++		def successList=[]		
+ 		for(String method : methodNamesTemp){
+@@ -78,3 +40,2 @@
+ 		for(String method : methodNamesTemp){
+-			println method + "POWER 2"
+ 			try{
+@@ -80,5 +41,4 @@
+ 			try{
+-	
+ 				returnValue = coreAPIService.dummySendQuery(passedParams, "batch/${method}")
+ 				if(returnValue.success){
+ 					successList.add(returnValue.name)
+@@ -82,8 +42,4 @@
+ 				returnValue = coreAPIService.dummySendQuery(passedParams, "batch/${method}")
+ 				if(returnValue.success){
+ 					successList.add(returnValue.name)
+-				
+-				}else {
+-					successList.add(returnValue.name)
+-					successList.add(returnValue.p_message)
+ 				}
+@@ -89,9 +45,3 @@
+ 				}
+-				if(returnValue.sibsretry){
+-					successList.add("hhreconmm"+returnValue.name+"hhreconmm")
+-					
+-				}
+-
+-				
+ 			}catch(Exception e){
+ 				e.printStackTrace()
+@@ -96,4 +46,5 @@
+ 			}catch(Exception e){
+ 				e.printStackTrace()
++			
+ 			}
+ 		}
+@@ -98,9 +49,3 @@
+ 			}
+ 		}
+-		return successList
+-	}
+-	
+-	
+-	
+-	def executeReRouteApprover(params,methodNames){
+ 		
+@@ -106,76 +51,4 @@
+ 		
+-		def passedParams = ['docNumber':params.docNumber,'newApprover':params.newApprover]
+-		
+-
+-		ArrayList<String> methodNamesTemp = methodNames
+-		
+-		if(params.adhoc == "true" && params.methodName != null){
+-			methodNamesTemp.clear()
+-			methodNamesTemp.add(params.methodName)
+-		}
+-		def returnValue;
+-		def successList=[]
+-
+-		for(String method : methodNamesTemp){
+-			println method + "POWER 3"
+-			try{
+-	
+-				returnValue = coreAPIService.dummySendQuery(passedParams, "batch/${method}")
+-				
+-				
+-				println "returnValue Size: " + returnValue.size();
+-				returnValue.each { key, val ->
+-					println "Key: $key  Value: $val"
+-				}
+-				
+-				
+-				if(returnValue.success){
+-					successList.add(returnValue.name)
+-				
+-				}else {
+-					successList.add(returnValue.name)
+-					successList.add(returnValue.p_message)
+-				}
+-				if(returnValue.sibsretry){
+-					successList.add("hhreconmm"+returnValue.name+"hhreconmm")
+-					
+-				}
+-				
+-				println "successList Size: " + successList.size();
+-				successList.each { entry , index ->
+-				    println "${index}. successList: ${entry}"
+-				}
+-				
+-			}catch(Exception e){
+-				System.err.println("rerouteTradeServiceJob: "+ e.getMessage())
+-			}
+-		}
+-		return successList
+-	}
+-
+-	def getInterfaceDirectories(){
+-		def result = coreAPIService.dummySendQuery([:], "batch/getInterfaceDirectories")
+-		return result.directories
+-	}	
+-	
+-	
+-	def testMeth(params,methodNames){
+-	
+-		def returnValue;
+-		def successList=[]
+-		ArrayList<String> methodNamesTemp = methodNames
+-		for(String method : methodNamesTemp){
+-			try{
+-
+-				returnValue = coreAPIService.dummySendQuery(null, "batch/${method}")
+-				
+-				successList.add(returnValue.recon); // ER 20160905-019 - to return if for reconnection or not.
+-
+-			}catch(Exception e){
+-				e.printStackTrace()
+-			}
+-		}
+-
+ 		return successList
+ 	}
+ }
+\ No newline at end of file

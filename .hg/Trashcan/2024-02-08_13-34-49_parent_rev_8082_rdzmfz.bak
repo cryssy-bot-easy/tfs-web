@@ -1,0 +1,43 @@
+diff --git a/grails-app/views/batch/index.gsp b/grails-app/views/batch/index.gsp
+--- a/grails-app/views/batch/index.gsp
++++ b/grails-app/views/batch/index.gsp
+@@ -96,6 +96,18 @@
+     Project Name: index
+  
+  -->
++
++   <!--
++ 
++ *  (revision)
++    [Revised by:] Prochina, Crystiann Puso
++    [Date Revised:] 02/23/2024
++    Program [Revision] Details: Added Process Cicls and Generate Cicls File Interface.
++    PROJECT: WEB
++    MEMBER TYPE  : GSP
++    Project Name: index
++ 
++ -->
+  
+   <head>
+     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+diff --git a/web-app/js/batch/batch_events.js b/web-app/js/batch/batch_events.js
+--- a/web-app/js/batch/batch_events.js
++++ b/web-app/js/batch/batch_events.js
+@@ -84,6 +84,17 @@
+ 		Project Name: batch_event.js
+ 	 *
+ 	 */
++
++	/*PROLOGUE:
++	 * 	(revision)
++		[Revised by:] Crystiann Puso
++		[Date Revised:] 02/22/2024
++		Program [Revision] Details: Added case and function to process cicls and generate cicls file.
++		PROJECT: WEB
++		MEMBER TYPE  : Javascript
++		Project Name: batch_event.js
++	 *
++	 */
+ 	
+ 	var batchId="";
+ 	

@@ -1,0 +1,655 @@
+@charset "utf-8";
+
+/***** GENERAL STYLES ******/
+* {
+	margin: 0; padding: 0; list-style: none;  outline: none;
+
+	font: 11px Lato, 'helvetica-neue-lt-std', Trebuchet MS, Calibri, Arial, Myriad Pro, Verdana, sans-serif;
+} /* RESET */
+
+
+body, div, ul, ol, li, h1, h2, h3, h4, h5, h6, form, fieldset, input, textarea, p, th, td {margin:0; padding:0;} /* RESET */
+/*  *{ border: 1px solid black}  */
+
+/**
+ * PROLOGUE
+ * SCR/ER Description: Implementation of Version Control Management in TFS login screen
+ *	[Revised by:] Jesse James Joson
+ *	Program [Revision] Details: Add new id (version_area) and class (field_label_version) for usage of the label of version number on login screen
+ *	Date deployment: 4/24/2018
+ *	Member Type: CSS
+ *	Project: WEB
+ *	Project Name: style.css
+ */
+ 
+/**
+ * PROLOGUE
+ *	[Modified by:] Jesse James Joson
+ *	Date Modified: 8/28/2018
+ *  Details: Added narrativeFor740, new_amendment_narrative, special_payment_conditions class to be use in Special Payment Conditions field.
+ */
+ 
+/**
+ * PROLOGUE
+ *	[Revised by:] Cedrick C. Nungay
+ *	Program [Revision] Details: Added class for fixing MT707.
+ *	Date deployment: 8/15/2018
+ *	Member Type: CSS
+ *	Project: WEB
+ *	Project Name: style.css
+ */
+ 
+/**
+ * PROLOGUE
+ *	[Revised by:] Cedrick C. Nungay
+ *	Program [Revision] Details: Added class for MT759.
+ *	Date deployment: 9/18/2018
+ *	Member Type: CSS
+ *	Project: WEB
+ *	Project Name: style.css
+ */
+
+input[type=text], textarea, div[contenteditable]{text-transform: uppercase;}
+
+input[type=text]#username {text-transform: none;}
+
+#outer_wrap {width: 1000px; height: 768px; margin: 0 0 0 5px; background: #ffffff; position: relative; z-index: 4;}
+.ie7 #outer_wrap {width: 1000px; height: 768px; margin: 0 0 0 5px; background: #ffffff; position: relative;}
+#outer_wrap_login {width: 820px; height: 768px; margin: 0 auto; background: #ffffff; position: relative; z-index: 4;}
+.ie7 #outer_wrap_login {width: 1000px; height: 768px; margin: 0 auto; background: #ffffff; position: relative;}
+#outer_wrap_unauthorized {width: 1000px; height: 768px; margin: 0 auto; background: #ffffff; position: relative;}
+#header {width: 1012px; height: 111px; position: fixed; background: #ffffff; z-index: 3; display: flex;}
+.ie7 #header {width: 1000px; height: 111px; position: absolute; background: #ffffff; z-index: -999;}
+#header_ul li {float: left;}
+#logo {background: url(../images/logo.png) no-repeat; width: 180px; margin: 0px 10px 0px 10px; height: 111px; display: block; float: left; text-indent: -99999px;}
+#title {font-size: 30px; font-weight: bold; color: #ffffff; padding: 10px 0 0 0; text-align: left;}
+#subtitle {font-size: 17px; font-weight: bold; color: #ffffff; text-align: left; height: 24px;}
+.subtitle {font-size: 17px; font-weight: bold; color: #0db14b; text-align: center;}
+#header_info {float: right; margin: 20px 10px 5px 0;}
+#header_info li {float: left; margin: 0 5px; /*color: #b2b4b3;*/color: #ffffff; font-weight: bold; font-size: 11px;}
+#navigation {background: url(../images/accordion_bg.png) no-repeat; width: 200px; height: 605px; float: left; margin: 131px 20px 0 0; overflow: hidden; position: fixed; z-index: 2;}
+.ie7 #navigation {background: url(../images/accordion_bg_ie7.png) no-repeat; width: 187px; height: 605px; float: left; margin: 131px 0 0 0; overflow: hidden; position: absolute; z-index: -999; zoom: 1;} /* zoom -- fix for IE7 display issue */
+#navigation a {text-decoration: none; font-size: 13px; color: #ffffff; padding: 5px 0 5px 10px; display: block; width: 180px;}
+.ie7 #navigation a {text-decoration: none; font-size: 13px; font-weight: bold; color: #0db14b; padding: 5px 0 5px 10px; display: block; width: 175px;}
+#navigation a:hover {color: #ffffff; background: #666666;}
+#portfolio_title {font-weight: bold; color: #000040; border-bottom: 2px solid gray; padding: 5px;}
+#logout {color: #ffffff;}
+#help {color: #ffffff; text-decoration: none;}
+#portfolio_links {background: #efe9e5;}
+.ie7 #body_forms {float: right; width: 805px; margin: 131px 0 0 0; background: #ffffff;}
+#body_forms {float: right; width: 790px; margin: 131px 0 0 0; background: #ffffff;}
+.ie7 #login_area {background: url(../images/login_bg2.png) no-repeat; width: 746px; height: 455px; margin: 30px auto 0 auto;}
+#login_area {background: url(../images/login_bg2.png) no-repeat; width: 820px; height: 315px; margin: 100px auto 0 auto; position: fixed;}
+/* .ie7 #body_forms {float: right; width: 805px; height: 700px; border: solid 1px red; margin: 131px 0 0 0; z-index: -999; overflow: auto;} */
+#body_forms_title {padding: 0 0 0 20px; font-weight: bold; color: #0db14b; font-size: 14px;}
+#status_ul, #shortcuts_ul {margin: 0 0 0 30px; padding: 0 0 30px 0;}
+#status_ul li, #shortcuts_ul li {float: left; margin: 0 5px;}
+#header_details {float: left;}
+#header_details2 {float: right;}
+#body_forms_header {height: 100px; margin: 0 0 30px 0;}
+.ie7 #tab_container {background: #ffffff; margin: 0;}
+#tab_container {background: #ffffff; margin: 0 0 0 10px;}
+/* .chrome #tab_container, .firefox #tab_container, .ie8 #tab_container, .ie9 #tab_container {background: #ffffff; margin: 0 0 0 10px;} */
+#grid_pager {}
+#login_area_inside {border: 1px solid #0db14b; width: 400px; margin: 0 auto; padding: 10px;}
+#login_area_table {margin: 140px 0 0 500px; width: 270px;}
+#login_title {text-transform: uppercase; font-weight: bold; color: #0db14b; font-size: 14px; width: 420px; margin: 5px auto;}
+#forgot_your_password {text-align: right;}
+#signin {float: right;}
+#recompute_charges_div {width: 800px;}
+#add_instruction, .add_btn {background: url(../images/add.png) no-repeat; width: 14px; height: 13px; margin: 0 0 0 2px; display: block; text-indent: -99999px;}
+#spacer {height: 20px;}
+#unauthorized_area {width: 100%; height: 100%; margin: 50px auto 0 auto; }
+#ucpb_logo_unauthorized {background: url(../images/ucpb_logo_large.jpg) no-repeat; width: 349px; height: 278px; display: block; text-indent: -99999px; margin: 0 auto;}
+#unauthorized_sorry {font-weight: bold; font-size: 36px; text-align: center; color: #0F004E; display: block; margin: 50px 0 0 0;}
+#unauthorized_sorry2 {font-weight: bold; font-size: 20px; text-align: center; color: #8F9DA6; display: block;}
+#makerButton, #checkerButton, #approverButton {float: right; clear: both;}
+#userRole {float: right; clear: both;}
+#login_button button {margin: 10px 0 0 5px;}
+#create_transaction_popup label {font: 13px;}
+#radioContainer {}
+#yesBtnBD, #noBtnBD, #cancelBtnBD {padding: 0 5px;}
+#accEntries_total {width: 495px; text-align: right; width: 100%}
+#telecom {padding-top: 120px;}
+
+.label_width {width: 160px; }
+.label_width2 {width: 240px;}
+.label_width3 {width: 360px;}
+.input_width {width: 220px;}
+.body_forms_title2 { clear: both; font-weight: bold; font-size: 12px; padding: 0 0 0 20px; margin: 10px 0 5px 0;}
+.body_forms_table {margin: 0 0 30px 15px; width: inherit;}
+.ie7 .body_forms_table {margin: 0 0 30px 15px; width: 780px;}
+.body_forms_table_center {margin: 10px auto;}
+.tabs_forms_table {margin: 0;}
+.field_label_indent, .field_label_indent2, .field_label, .field_label_br, .field_label_accEntries {font-size: 13px; text-align: left; margin: 3px 10px 3px 0px;}
+.field_label_indent {text-indent: 30px;}
+.field_label_indent2 {text-indent: 25px;}
+.field_label_total {font-size: 13px; font-weight: bold; text-align: left; margin: 3px 10px 3px 5px;}
+.field_label_login {font-size: 17px; color: #cccccc; text-align: left; padding: 1px 0 0 0;}
+.field_label_version {font-size: 14px; color: #666666; text-align: left; padding: 1px 0 0 0; font-style: italic;}
+#version_area {margin: 145px 0 0 300px; position: absolute;}
+.field_label_accEntries {font-weight: bold;}
+.select_dropdown {border: 1px solid #0db14b !important; padding:3px; width: 167px; margin: 3px 0 3px 0; font-size: 13px; text-transform: uppercase;}
+.select_dropdown_short {border: 1px solid #0db14b; width: 60px !important; padding: 3px !important; margin: 3px 0 3px 0; text-align: center; font-size: 13px;}
+.select2_dropdown {width: 167px; margin: 3px 0 3px 0; font-size: 13px;}
+.select_dropdown_medium{width: 80px; border: 1px solid #0db14b; margin: 3px 0 3px 0; font-size:13px; padding:3px !important;}
+.input_field_short {border: 1px solid #0db14b; width: 30px; padding: 3px !important; margin: 3px 0 3px 0; text-align: center; font-size: 13px;}
+.input_field, .textarea {text-transform: uppercase; padding: 3px !important; border: 1px solid #0db14b; width: 160px; margin: 3px 0 3px 0; font-size: 13px; resize:none;}
+.input_field_normal_case {text-transform: none !important; padding: 3px !important; border: 1px solid #0db14b; width: 160px; margin: 3px 0 3px 0; font-size: 13px; resize:none;}
+.input_field_docType {padding: 3px !important; border: 1px solid #0db14b; width: 215px; margin: 3px 0 3px 0; font-size: 13px; resize:none;}
+.input_field_login {padding: 3px !important; border: 1px solid #0db14b; width: 200px; margin: 3px 0 3px 0; font-size: 13px; resize:none;}
+.input_field_login_normal_case {text-transform: none !important; padding: 3px !important; border: 1px solid #0db14b; width: 200px; margin: 3px 0 3px 0; font-size: 13px; resize:none;}
+.input_field_80 {border: 1px solid #0db14b; width: 480px; padding: 3px !important; margin: 3px 0 3px 0; text-align: left; text-transform: uppercase; font-size: 13px;}
+
+.input_span {background-color: #ece9d8; width: 162px; height: 17px; display: block; text-align: left; font-size: 12px; padding-top: 3px; padding-left: 3px; border: 1px solid #0db14b; margin: 3px 0 3px 0;}
+
+.input_field_right {padding: 3px 10px 3px 0; text-align: right; border: 1px solid #0db14b; width: 157px; margin: 3px 0 3px 0; font-size: 13px; }
+.input_field_right2 {padding: 3px 10px 3px 0; text-align: right; border: 1px solid #0db14b; width: 96%; font-size: 13px; }
+.input_field_accentries_right {padding: 3px 10px 3px 0; text-align: right; border: 1px solid #0db14b; width: 95px; margin: 3px 0 3px 0; font-size: 13px; font-weight: bold;}
+
+.textarea_long_upper {border: 1px solid #0db14b; width: 230px; margin: 3px 0 3px 0; font-size: 13px; padding: 2px; text-transform: uppercase;}
+
+.input_field_medium {width: 80px !important; border: 1px solid #0db14b; margin: 3px 0 3px 0; font-size:11px; padding: 2px;}
+.input_field_medium_right {text-align: right; width: 80px !important; border: 1px solid #0db14b; margin: 3px 0 3px 0; font-size:11px; padding: 2px;}
+.input_field_long, .textarea_long, .datepicker_field_long {border: 1px solid #0db14b; width: 230px; margin: 3px 0 3px 0; font-size: 13px; padding: 2px;}
+.input_field_auto {border: 1px solid #0db14b;width: 510px; margin: 3px 0 3px 0; font-size: 11px; padding: 2px}
+.input_field_file {border: 1px solid #0db14b; width:233px; margin: 3px 0 3px 0; padding: 2px}
+.input_field_120px{border: 1px solid #0db14b; width: 120px; margin: 3px 0 3px 0; font-size: 11px; padding: 2px}
+.datepicker_field_admin , .datepicker_field6, .datepicker_field5, .datepicker_field4, .datepicker_field3, .datepicker_field2, .datepicker_field {border: 1px solid #0db14b; width: 160px; margin: 3px 0 3px 0; padding: 3px}
+.input_field_80:focus, .datepicker_field_admin:focus, .input_field_long:focus, .input_field_right2:focus, .input_field_right:focus, .datepicker_field4:focus, .datepicker_field3:focus, .datepicker_field2:focus, .input_field:focus, .select_dropdown:focus, .select2_dropdown:focus, .datepicker_field:focus, .textarea:focus, .input_field_file:focus, .input_field_medium:focus , .input_field_short:focus, .select_dropdown_medium:focus {background: #56C981;}
+.input_field_file {border: 1px solid #0db14b; width: 223px; margin: 3px 0 3px 0; padding: 1px}
+.datepicker_field_admin:focus, .input_field_right:focus, .datepicker_field4:focus, .datepicker_field3:focus, .datepicker_field2:focus, .input_field:focus, .select_dropdown:focus, .select2_dropdown:focus, .datepicker_field:focus, .textarea:focus, .input_field_file:focus, .input_field_short:focus {background: #56C981;}
+.search_btn {background: url(../images/lookup.png) no-repeat; width: 28px; height: 16px; display: inline-block; text-indent: -99999px; margin-bottom: 5px;}
+.search_btn2 {background: url(../images/lookup.png) no-repeat; width: 28px; height: 16px; display: inline-block; margin-bottom: 5px; text-indent: -99999px;}
+.search_btn:hover {background-position: 0 -16px;}
+.search_btn:active {background-position: 0 -32px;}
+.buttons {float: right;}
+.buttons_add_trans_letter {float: right; margin:0 92px 0 0;}
+.navigation_title {font-weight: bold; font-size: 13px; color: #0f004e; background: #efe9e5; border: 1px solid #d7d3d0; padding: 10px 2px;}
+.navigation_title:hover {color: #efe9e5; background: #0f004e;}
+.header_details_title {padding: 0 0 0 20px; font-weight: bold; color: #0db14b; font-size: 14px;}
+.tab_titles {font-weight: bold;}
+.editable {background-color:#FFF;}
+.grid_wrapper {border: 1px solid #0db14b; width: 780px; margin: 5px auto; height: auto;}
+.grid_wrapper_short {border: 1px solid #0db14b; width: 300px; margin: 5px auto; height: auto;}
+.grid_wrapper2 {border: 1px solid #0db14b; width: 900px; margin: 5px auto; height: auto;}
+.grid_wrapper_unacted {border: 1px solid #0db14b; width: 780px; margin: 0 0 0 21px; height: auto;}
+.grid_wrapper_telecom {border: 1px solid #0db14b; width: 780px; margin: 0 auto; height: auto;}
+.grid_wrapper_min {border: 1px solid #0db14b; width: 600px; margin: 5px auto; height: auto;}
+.grid_wrapper_apply_ap {border: 1px solid #0db14b; width: auto; height: auto; margin: 5px auto;}
+.grid_wrapper_forex {border: 2px solid #A4B0BC; width: 500px; margin: 5px 0;}
+.grid_wrapper_popup {border: 2px solid #A4B0BC; width: 500px; margin: 5px auto;}
+.grid_wrapper_auto {border: 1px solid #0db14b; min-width: 500px; margin: 5px auto;}
+.grid_wrapper_auto2 {border: 1px solid #0db14b; min-width: 330px; margin: 5px auto;}
+.grid_wrapper_user_logout {border: 1px solid #0db14b; width: 800px; margin: 5px auto; height:auto;}
+.forgot_your_password {color: #0db14b; margin: 20px 0 0 0; display: block; text-align: right;}
+.popup_table {width: 500px; margin: 0 auto;}
+.popup_buttons, .popup_buttons_short, .popup_buttons_short2 {float: right;}
+.popup_buttons_alert {width: 200px; margin: 10px auto;}
+.popup_buttons_alert_right {width: 200px; margin: 10px auto;}
+.popup_buttons_alert2 {width: 200px; margin: 20px auto;}
+.popup_buttons_alert2 li,.popup_buttons_alert4 li {float: left;}
+.popup_buttons_alert #btnAlertConfirm {float: left;}
+.popup_buttons_alert #btnAlertNo {float: right;}
+.popup_buttons_alert3 {width: 200px; margin: 20px auto;}
+.popup_buttons_alert4 {width: 250px; margin: 10px auto;}
+.popup_buttons_alert4 li {padding: 0 9px;}
+.popup_buttons_confirmation {width: 200px; }
+.popup_buttons_confirmation li {}
+.popup_buttons_center {float: right;}
+.popup_buttons_center li {float: left;}
+.jclock {font-weight: bold}
+#help {font-weight: bold}
+.buttons_for_grid_wrapper {width: 790px;}
+.buttons_for_grid_wrapper2 {width: 805px;}
+.asterisk, .passOnRatesConfirmedByChargesAsterisk, .tenorToAsterisk {color: red; font-size: 15px;}
+.clear_font {color: white; font-size: 15px;}
+.allcaps {text-transform: uppercase;}
+.unacted_table {border: 1px solid #A4B0BC; padding: 0;}
+.unacted_table tr td {border: 1px solid #A4B0BC; padding: 5px;}
+.unacted_table th {font-weight: bold;}
+.body_forms_table_btn {float: right; margin: 10px 40px 0 0;}
+.body_forms_table_btn_admin {float: right; margin: 10px 0 0 0;}
+.ie7 .body_forms_table_btn {float: right; margin: 10px 40px 0 0;}
+.ie7 .body_forms_table_btn_admin {float: right; margin: 10px 0 0 0;}
+.body_forms_table_btn_admin li, .body_forms_table_btn li {float: left; padding: 0 2px;}
+.ie7 .body_forms_table_btn_admin li, .ie7 .body_forms_table_btn li {float: left; padding: 0 2px; width: 65px;}
+/*.ui-jqgrid-bdiv .jqgrid_inline_links, .ui-jqgrid-bdiv .jqgrid_inline_links_mt, .ui-jqgrid-bdiv .jqgrid_inline_links_reroute {color: #00AEFF;}*/
+.ui-jqgrid-bdiv .jqgrid_inline_links, .ui-jqgrid-bdiv .jqgrid_inline_links_mt, .ui-jqgrid-bdiv .jqgrid_inline_links_reroute {color: #0db14b;}
+.ui-jqgrid-bdiv .jqgrid_inline_links:hover, .ui-jqgrid-bdiv .jqgrid_inline_links_mt:hover, .ui-jqgrid-bdiv .jqgrid_inline_links_reroute:hover {color: #ffffff; background: #666666;}
+.routing_information {background: #00AEFF; font-weight: bold;  font-size: 13px; width: 345px; height: 20px; margin: 0 0 -5px 450px; padding: 2px 0 0 0; text-align: center;}
+.instructions-and-routing-grid{border: 2px solid #A4B0BC; width: 780px; margin: 5px;}
+.title_label, .title_label_accordion, .title_label_unacted, .charges_title, .p_header, .p_header_indent {font-weight: bold; color: #193136; font-size:13px;}
+.total_label {font-weight: bold; color: #0F004E; font-size:13px; border: 1px solid green;}
+.title_label_accordion {}
+.p_header_indent {display: block; margin: 0 0 0 38px;}
+.title_label_unacted {display: block; margin: 0 0 0 21px;}
+.textarea_required {width: 300px; height: 125px; font-size: 13px; border: 1px solid #0db14b;}
+.textarea_shipment_goods {width: 350px; height: 125px; font-size: 11px; border: 1px solid #0db14b;}
+.textarea_shipment_goods2 {width: 350px; height: 250px; font-size: 11px; border: 1px solid #0db14b;}
+.textarea_documents_list {text-transform: uppercase; padding: 3px !important; border: 1px solid #0db14b; width: 320px; margin: 3px 0 3px 0; font-size: 13px; resize:none;}
+.textarea_shipment_goods:FOCUS, .textarea_shipment_goods2:FOCUS {background: #CFEFFD;}
+.textarea_add_instructions {width: 475px; font-size: 13px; height: 75px; border: 1px solid #0db14b; text-transform: uppercase;}
+.textarea_add_instructions_exports {width: 475px; font-size: 13px; height: 75px; border: 1px solid #0db14b; text-transform: none;}
+.textarea_view_mt {width: 475px; font-size: 13px; height: 300px; border: 1px solid #0db14b; text-transform: none;}
+.textarea_other_instructions {width: 100%; font-size: 11px; height: 175px; border: 1px solid #0db14b; text-transform: uppercase;}
+.textarea_add_instructions:FOCUS,.textarea_view_mt:focus {background: #CFEFFD;}
+.popup_table_short_center {margin: 0 auto;}
+.spacer {height: 20px;}
+.unacted_spacer {background: #DDD7D5;}
+.display-ib-tr-loan {}
+.note {clear: left; float: left; padding-left: 20px; width: 100px;}
+.note2 {color: red; font-size: 11px; font-style: italic;}
+.note_inside {font-size: 13px; color: red; width: 300px;}
+.reinstate_buttons {margin: 0 auto;}
+.are_you_sure {font-size: 13px;}
+.records_found {font-weight: bold;}
+.ie7 .form_table_inquiry {margin: 0;}
+.form_table_inquiry {margin: 0 0 0 10px;}
+
+/*UPLOAD FILE*/
+.upload_header{margin-left:10px;}
+.upload_tbl{margin-left:10px;}
+.upload_footer{float:left;position:relative;}
+.upload_send{float:right;position:relative;}
+.upload_text{font-weight:bold;font-size:12px;}
+.upload_second_row{margin-left:6em;}
+
+/* INPUT BUTTON */
+.input_button, .input_button_alert 	{background: url(../images/button_affirmative_b.png) no-repeat; width: 64px;}
+.input_button_nego_trans_letter 	{background: url(../images/button_affirmative_b.png) no-repeat; width: 64px; float:right; margin:0 95px 0 0;border: none; font-size: 13px; font-weight: bold;  text-align: left; height: 17px;padding: 0 0 2px 4px;}
+.input_button2 {background: url(../images/button_affirmative2_b.png) no-repeat; width: 100px;}
+.input_button3 {background: url(../images/button_affirmative3_b.png) no-repeat; width: 130px;}
+.input_button_long {background: url(../images/button_affirmative_long1_b.png) no-repeat; width: 172px;}
+.input_button_long1 {background: url(../images/button_affirmative_long1.5_b.png) no-repeat; width: 214px;}
+.input_button_long2 {background: url(../images/button_affirmative_long2_b.png) no-repeat; width: 239px;}
+.input_button_negative, .input_button_negative_alert 	{background: url(../images/button_negative_b.png) no-repeat; width: 64px;}
+.input_btn_negative_trans_ltr 							{background: url(../images/button_negative_b.png) no-repeat; width: 64px;float:right; margin:0 95px 0 0;border: none; font-size: 13px; font-weight: bold;  text-align: left; height: 17px;padding: 0 0 2px 4px;}
+.input_button_negative2 {background: url(../images/button_negative2_b.png) no-repeat; width: 85px;}
+.input_button_negative3 {background: url(../images/button_negative3_b.png) no-repeat; width: 150px;}
+.input_button_negative_long {background: url(../images/button_negative_long_b.png) no-repeat; width: 172px;}
+
+.input_button_negative_long, .input_button_negative3, .input_button_negative2, .input_button_negative, .input_button_long2, .input_button_long, .input_button_long1, .input_button3, .input_button2, .input_button {border: none; font-size: 13px; font-weight: bold; margin: 1px 0; padding: 0 0 2px 15px; text-align: left; height: 21px; float: right; color: #ffffff;}
+.input_button_negative_alert, .input_button_alert {border: none; font-size: 13px; font-weight: bold; padding: 0 0 2px 15px; text-align: left; height: 21px; color: #ffffff;}
+.gecko .input_button_negative_long, .gecko .input_button_negative3, .gecko .input_button_negative2, .gecko .input_button_negative, .gecko .input_button_long2, .gecko .input_button_long1, .gecko .input_button_long, .gecko .input_button3, .gecko .input_button2, .gecko .input_button {border: none; padding: 0; text-align: left; height: 21px; font-weight: bold; float: right;}
+.input_button_negative_alert:hover, .input_button_alert:hover, .input_button_negative_long:hover, .input_button_negative3:hover, .input_button_negative2:hover, .input_button_negative:hover, .input_button_long2:hover, .input_button_long1:hover, .input_button_long:hover, .input_button3:hover, .input_button2:hover, .input_button:hover {background-position: 0 -21px;}
+.input_button_negative_alert:active, .input_button_alert:active, .input_button_negative_long:active, .input_button_negative3:active, .input_button_negative2:active, .input_button_negative:active, .input_button_long2:active, .input_button_long1:active, .input_button_long:active, .input_button3:active, .input_button2:active, .input_button:active {background-position: 0 -42px;}
+
+/* POP-UP buttons */
+.popup_btn {background: url(../images/lookup.png) no-repeat; width: 34px; height: 17px; border: none; display: inline-block;  text-indent: -99999px; vertical-align: middle; /* hack for IE 7 */ *display: inline; zoom: 1;}
+.popup_btn_bottom {background: url(../images/lookup.png) no-repeat; width: 34px; height: 17px; border: none; display: inline-block; text-indent: -99999px; vertical-align: bottom;}
+.popup_btn:hover, .popup_btn_bottom:hover {background-position: 0 -16px;}
+.popup_btn:active, .popup_btn_bottom:active{background-position: 0 -32px;}
+
+/* CHARGES TABLE */
+.charges_table { border-collapse: collapse;}
+.charges_table tr>td:FIRST-CHILD, .charges_table tr>td.space { background-color: white; border: none;}
+.charges_table td {border: 1px solid #0db14b; padding: 0 5px 0 5px;}
+.charges_table td>input[type=text]{border: none; margin: 2px 0 2px 0 !important; padding: 3px !important;}
+.charges_table td>input[type=text]:FOCUS {background-color:white !important;}
+.charges_table td { background-color: #ece9d8}
+.charges_table td>input[readonly]{ background-color: #ece9d8; border: none !important }
+.charges_table td>input[readonly]:FOCUS{ background-color: #ece9d8 !important;}
+.charges_table td.link {background-color:#CFEFFD; width: 28px; text-align: center;}
+.charges_table td.editable {background-color:#FFF}
+.charges_currency {background-color: #ece9d8; width: 30px; display: block; text-align: center;}
+
+#forex_charges td>input[readonly]{background-color: white; border: none !important}
+#forex_product td>input[readonly]{background-color: white; border: none !important}
+
+input[readonly] {background-color: #ece9d8; border: 1px solid #0db14b !important}
+input[readonly]:FOCUS { background-color: #ece9d8 !important; }
+textarea[readonly] {border: 1px solid #0db14b; background-color: #ece9d8; }
+/* td>*[readonly] {border: 1px solid #777777;} */
+select[disabled] {border-color: black;} /* does not work in IE 7 */
+
+input[type=text][disabled] {background-color: #ece9d8; border: 1px solid #0db14b !important}
+textarea[disabled] {border: 1px solid #0db14b; background-color: #ece9d8; }
+
+.popup_bg_override { /*background*/
+    display:none;
+    position:fixed;
+    _position:absolute; /* hack for internet explorer 6*/
+    height:100%;
+    width:100%;
+    top:0;
+    left:0;
+    background:#000000;
+    z-index:1000;
+}
+.popup_div_override {
+    display:none;
+    position:fixed;
+    _position:absolute; /* hack for internet explorer 6*/
+    width:475px;
+    background:#FFFFFF;
+    border:2px solid #cecece;
+    z-index:1002;
+    padding:12px;
+    font-size:13px;
+}
+.popup_title {
+    text-align:left;
+    color:#6FA5FD;
+    font-size:22px;
+    font-weight:700;
+    border-bottom:1px dotted #D3D3D3;
+    padding-bottom:2px;
+    margin-bottom:20px;
+}
+.popup_close {
+    background-image: url(../images/button_close.png);
+    width: 13px;
+    height: 15px;
+    font-size:14px;
+    line-height:14px;
+    right:6px;
+    top:4px;
+    position:absolute;
+    color:#6FA5FD;
+    font-weight:700;
+    display:block;
+    text-indent: -99999px;
+}
+
+.popup_bg_alert {z-index:9998; display:none; position:fixed; _position:absolute; /* hack for internet explorer 6*/ height:100%; width:100%; top:0; left:0; background:#000000; border:1px solid #cecece;}
+.popup_div_alert {z-index:9999; display:none; _position:absolute; /* hack for internet explorer 6*/ background:#FFFFFF; border:2px solid #cecece; padding:12px; font-size:13px; width: 275px; min-height: 120px; text-align: center;}
+.popup_div_alert2 {z-index:9999; display:none; _position:absolute; /* hack for internet explorer 6*/ background:#FFFFFF; border:2px solid #cecece; padding:12px; font-size:13px; width: 275px; height: 170px; text-align: center;}
+.popup_confirmation  { }
+
+/* Styles inside Popup */
+.popups h2, .popup_div_override h2, .popup h2 {text-align:left; color: #ffffff; font-size:14px; font-weight:700; border-bottom:1px dotted #D3D3D3; padding-bottom:2px; margin-bottom:20px;}
+.popups .popup_buttons, .popup_div_override .popup_buttons, .popup .popup_buttons { text-align: left; padding-left: 3em; padding-top: 1em;}
+.popup_title {text-align:left; color: #ffffff; font-size:14px; font-weight:700; border-bottom:1px dotted #D3D3D3; padding-bottom:2px; margin-bottom:20px;}
+.content_divider {margin: 10px 0 0 35px; border-collapse: collapse;}
+.popup_divider {margin: 0 auto; width: auto; height: auto;}
+.trans_currency[readonly], .popup_full_width input.rate_currency[readonly], .popup_full_width input.trans_currency[readonly], .popup_full_width input.lc_currency[readonly], .popup_full_width input.doc_currency[readonly] { border-style: none !important; background: white;}
+.popup_full_width { width: 100%;}
+.popups ul { display: table-row;}
+.popups li { display: table-cell;}
+
+/* Popup Size*/
+#popup_modeOfPaymentNegotiation{height: 85px; width: 370px;}
+#popup_page{height: 260px; width: 400px;}
+#add_instructions_popup #add_comment {width: 100%; height: 170px;}
+#goods_description_popup{width:300px;height:200px;}
+#popup_processing_unit_code, #popup_processing_unit_code2 { width: 300px;}
+#popup_digital_signatories { width: 400px;}
+#popup_interest_due { width: 400px; }
+#popup_updateChargesFxlcOpening { width: 970px; height: 768px; }
+#popup_reroute {height: 130px;}
+#popup_createImportAdvancedEts {width:300px; height: auto;}
+#popup_cif, #popup_cif_normal, #popup_cif_main {width: 580px;}
+#popup_confirm, .popup_confirmation, #popup_confirmation2, #popup_confirmation { width: 275px; height: 120px; text-align: center;}
+#popup_checker_route, #popup_over_availment { width: 275px; height: 120px; text-align: center;}
+#bankCommissionPopup, #cilexFeePopup, #documentaryStampPopup, #commitmentFeePopup, #confirmingFeePopup ,#notarialFeePopup , #remittanceFeePopup, #suppliesFeePopup, #advisingFeePopup, #popup_booking_commission, #popup_bsp_registration_fee, #cableFeePopup, #cancellationFeePopup, #popup_marine_insurance, #postageFeePopup, #corresExportChargePopup, #debitMemoPopup {width: 450px;}
+
+#add_instructions_popup {}
+#popup_modeOfPaymentProceeds, #popup_modeOfPaymentCharges, #modeOfPaymentDiv, #popup_modeOfPaymentCash, #popup_modeOfPaymentMDCollection, .popup_container{min-height: 50px; width:380px; padding-top: 10px;}
+#popup_cableFee, #popup_suppliesFee {width: 325px; height: 175px;}
+#popup_cifSearch, #popup_exporterCbCode {width: 575px; height: 395px}
+#popup_editCilexFee, #popup_bankCommission{width: 550px; height: 325px}
+#popup_reqDocuments1, #popup_reqDocuments2, #letterOfTransferPopup {width: 575px;}
+#shipmentPeriodPopup, #descriptionOfGoodsServicesPopup, #popup_viewRelatedLc, #popup_periodForPresentation, #popup_addComment, #popup_addCondition1, #requiredDocListPopup, #popup_addCondition2 {width: 500px; height: 330px}
+#popup_addInstruction, #popup_defpaymentDetails, #popup_mixpaymentDetails {width: 500px; height: 300px}
+#popup_bankAddress, #popup_additionalAmtCovered, #sender_receiver_popup, #details_charges_popup {width: 475px !important; height: 225px !important;}
+#popup_confirm, .popup_confirmation, #popup_confirmation2, #popup_confirmation { width: 275px; height: 120px; text-align: center;}
+#popup_checker_route { width: 275px; height: 120px; text-align: center;}
+#popup_description_of_goods { width: 500px; height: 350px;}
+#popup_related_lcs { width: 600px; height: 450px;}
+#popup_description_of_goods #header_description_of_goods, #popup_related_lcs #header_related_lcs { text-align: left; color: black; font-size: 11pt; font-weight: 800; margin: 0 1.5em;}
+#popup_related_lcs #header_related_lcs { margin: 0 3.2em;}
+#popup_related_lcs hr { margin: 0 4.3em;}
+#popup_description_of_goods hr { margin: 0 2.1em;}
+#popup_description_of_goods form { padding: 2em;}
+#popup_description_of_goods #add_description { width: 100%; height: 200px; resize: none;}
+#popup_description_of_goods ul, #popup_related_lcs ul { display: table-row;}
+#popup_description_of_goods li, #popup_related_lcs li { display: table-cell;}
+#popup_description_of_goods li.long_width { width: 26em;}
+#popup_related_lcs li.long_width { width: 38em;}
+.popup_confirmation2 .hide_all .hidden { display: none;}
+/* #popup_additionalAmtCovered { width: 370px; height: 115px;} -- Dumoble CSS*/
+#popup_bankAddress, #shipmentPeriodPopup, #popup_add_condition, #textarea_popup { width: 475px; height: 225px !important;}
+span#header_additional_amount, span#header_bankAddress, span#header_shipmentPeriod, span#header_add_condition  { text-align: left; color: black; font-size: 11pt; font-weight: 800; margin: 0 2em;}
+#popup_additionalAmtCovered hr, #popup_bankAddress hr, #shipmentPeriodPopup hr, #popup_add_condition hr { margin: 0;}
+#popup_additionalAmtCovered form, #popup_bankAddress form, #shipmentPeriodPopup form, #popup_add_condition form { padding: 2em;}
+#popup_additionalAmtCovered #add_comment, #popup_bankAddress #add_comment, #popup_add_condition #add_comment { width: 100%; height: 170px;}
+.text-area-large { width: 100%; height: 170px;}
+#popup_additionalAmtCovered li.long_width { width: 30em;}
+#popup_bankAddress li.long_width { width: 30em;}
+#shipmentPeriodPopup li.long_width { width: 30em;}
+#popup_add_condition li.long_width { width: 27em;}
+#popup_accountingEntries { width: 950px;}
+/* #popup_accountingEntries #header_accountingEntries { text-align: left; color: black; font-size: 11pt; font-weight: 800; margin: 0 2em;}
+#popup_accountingEntries hr { margin: 0 2.4em;}
+#popup_accountingEntries div.margined_accountingEntries { padding: 2em;} */
+#table_accountingEntries { width: 100%; border-collapse: collapse}
+#table_accountingEntries th { background-color: #efe9e5; text-align: center; font-weight: bold;}
+#table_accountingEntries th, #table_accountingEntries td { border: solid black 1px;}
+#ec_login_popup { width:420px; }
+#related_lc_popup, #facility_popup  { width: 520px;}
+#popup_period_for_presentation1 { width: 350px; height: 300px}
+#popup_period_for_presentation2 { width: 475px;}
+#popup_selectCharges {width: 330px; height: 280px;}
+.ie7 #popup_selectCharges {width: 330px; height: 340px;}
+.popup_input_instruction_table tr { display: block; margin-top: 10px; }
+.popup_input_instruction_table.table1 > tbody > tr > td:nth-of-type(1) { min-width: 69px; max-width: 69px; }
+.popup_input_instruction_table.table1 > tbody > tr > td:nth-of-type(2) { min-width: 199px; max-width: 199px; }
+.popup_input_instruction_table.table1 > tbody > tr > td:nth-of-type(3) { min-width: 207px; max-width: 207px; }
+.popup_input_instruction_table.table1 > tbody > tr:nth-of-type(4) { margin-bottom: 10px; }
+.popup_input_instruction_table.table2 > tbody > tr > td:nth-of-type(1) { min-width: 63px; max-width: 63px; }
+.popup_input_instruction_table.table2 > tbody > tr > td:nth-of-type(2) { min-width: 133px; max-width: 133px; }
+.popup_input_instruction_table.table2 > tbody > tr > td:nth-of-type(3) { min-width: 279px; max-width: 279px; }
+/* FIELD VALIDATION */
+
+/* Error highlight */
+#my-form .input_field .invalid {background: #FFFFFF;}
+#my-form .error-icon {position: absolute; top: 7px; right: 2px; height: 13px; width: 13px; background: url(../images/error_icon2.png) no-repeat; cursor: pointer;}
+.ie #my-form .error-icon {position: absolute; top: 7px; right: 0; height: 16px; width: 16px; background: url(../images/error_icon2.png) no-repeat; cursor: pointer;}
+/* Error description */
+#my-form .error {display: none; position: absolute; top: 0; right: -150px; z-index: 999; padding: 10px; width: 120px; font-size: 12px; background: #00AEFF; color: white;}
+/* Popup arrow */
+#my-form .error:after {content: ""; position: absolute; top: 0; left: -20px; border-style: solid; border-width: 0 10px 10px 10px; border-color: transparent transparent transparent transparent;}
+#my-form #login_area_table td {clear: both; position: relative; /* margin: .5em 0; */}
+#my-form .field_label_login, #my-form .input_field { display: inline-block; }
+#my-form .valid-icon {background: url(../images/img/ok.png) no-repeat; cursor: default;}
+
+/* Error highlight using class in form*/
+/*
+form: class="form-validation"
+table: class="validation_table"
+*/
+
+.form-validation .input_field .invalid {background: #FFFFFF;}
+.form-validation .error-icon {position: absolute;vertical-align: inherit; height: 13px;width: 13px;background: url(../images/error_icon2.png) no-repeat;cursor: pointer;}
+.ie .form-validation .error-icon {position: absolute; vertical-align: inherit; height: 16px;width: 16px;background: url(../images/error_icon2.png) no-repeat;cursor: pointer;}
+
+/* Error description */
+.form-validation .error {display: none; position: absolute; margin-left: 20px; z-index: 999;padding: 10px;width: 120px;font-size: 12px;background: #00AEFF;color: white;}
+
+/* Popup arrow */
+.form-validation .error:after {content: "";position: absolute;top: 0;left: -20px; border-style: solid; border-width: 0 10px 10px 10px;border-color: transparent transparent transparent transparent;}
+.form-validation .valid-icon {background: url(../images/img/ok.png) no-repeat;cursor: default;}
+.form-validation .field_label, .form-validation .input_field { display: inline-block; }
+.form-validation .validation_table td {clear: both;position: relative;/* margin: .5em 0; */}
+
+
+/*============Added==========*/
+.save_as_draft { display: none;} /*  buttton is shown during FXLC Opening Ets ~ Basic Details Tab, used in basic_details_utility.js */
+.date_width{width:78px;}
+.td1 {border: 0; width: 30px;}
+.td_height1 {height: 185px;}
+.td_height2 {height: 85px;}
+.valign_top {vertical-align: top; padding-top: 5px;}
+.right_indent {float: right;}
+.clear-float{clear:both;}
+.no-border{border:0 !important;}
+.text_area3 {border: 1px solid #0db14b; height: 250px; width: 350px;}
+.text_area_details_summary{border: 1px solid #0db14b; width: 300px; height: 500px;}
+.mtMessage_text_area{border: 1px solid #0db14b; width: 800px; height:300px ; font-size: 11px; resize:none;}
+.grid_wrapper_telecom {margin-left: 230px;}
+
+.popup_bg {display:none;position:fixed;_position:absolute; /* hack for internet explorer 6*/height:100%;width:100%;top:0;left:0;background:#000000; border:1px solid #cecece;z-index:998;}
+.popup_div{display:none;position:fixed;_position:absolute; /* hack for internet explorer 6*/width:408px;background:#FFFFFF;border:2px solid #cecece;z-index:999;padding:12px;font-size:13px;}
+
+.popup_div_update_charges {display:none;position:fixed;_position:absolute; /* hack for internet explorer 6*/width:950px;background:#FFFFFF;border:2px solid #cecece;z-index:999;padding:12px;font-size:13px;}
+
+#periodPresentation2From, #periodPresentation2To { height: 120px; width: 300px}
+.jqgrid_uppercase {text-transform: uppercase}
+.jqgrid_lowercase {text-transform: lowercase !important}
+
+.approvedEtsPaymentsReadonly td>input[readonly]{background-color: white; border: none !important}
+
+/*============for payment reports==========*/
+.disableDebitMemo, .disableCreditMemo, .disablePaySummaryWithCash, .disablePaySummaryWithoutCash, .disablePddts, .disableMt103, .disableAccountingEntries {
+   pointer-events: none;
+   cursor: default;
+   color: #c8c8c8 !important;
+}
+
+textarea {resize: none; overflow: auto;}
+/* textarea, input[type=text] {text-transform: uppercase;}
+input[type=text]#username {text-transform: none;} */
+
+.special_payment_conditions {width:800px;}
+
+textarea.amendment_narrative {border: 1px solid #0db14b; width: 100%; height: 175px;}
+textarea.new_amendment_narrative {border: 1px solid #0db14b; width: 100%;}
+textarea.narrativeFor740 {border: 1px solid #0db14b; width: 100%; height: 10em; margin-bottom: 20px;}
+textarea.amendment_narrative:focus {background: #CFEFFD;}
+
+.textarea_mt_instruction{border: 1px solid #0db14b; width:600px; height: 75px;}
+.textarea_mt_message{border: 1px solid #0db14b; width:600px; height:300px}
+
+.inquiry_form {width: inherit;}
+
+/* -- EXTENSION OF POPUPS FOR AMENDMENT TRANSACTIONS */
+#bankCommissionPopup.amendment, #confirmingFeePopup.amendment, #commitmentFeePopup.amendment {width: 680px;}
+
+.remark {text-decoration:underline; color: #00AEFF;}
+
+.alert_button {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.errorMessage {font-size: 11px; text-align: left; margin: 3px 10px 3px 0px; color: red; background: #ffffff; font-weight: bold;}
+
+#body_forms.window {float: left; width: 925px;}
+#header.window, #header.window_nonlc {width: 925px;}
+/* FOR IE7/IE8 NON-LC HEADERS */
+.ie7 #header.window_nonlc, .ie8 #header.window_nonlc {width: 925px; margin: 0 0 0 -925px;}
+#outer_wrap.window {width: 925px;}
+
+/* -- forex table workaround -- */
+table.foreign_exchange {width: 780px; border-collapse: collapse;}
+table.foreign_exchange th {text-align: center; background-color: #efe9e5; color: #0db14b; font-weight: bold; outline: 1px #D8D5C8 solid; height: 20px;}
+table.foreign_exchange th.rates {width: 72px;}
+table.foreign_exchange th.rate_description {width: 181px;}
+table.foreign_exchange th.pass_on_rate, table.foreign_exchange th.special_rate {width: 253px;}
+
+table.foreign_exchange th:hover, table.foreign_exchange tr:hover { background-color: #6CB0CE; outline-color: #026890}
+table.foreign_exchange th:hover { color: #026890}
+
+table.foreign_exchange td {height: 20px; padding-left: 2px; vertical-align: middle; outline: .5px black solid;}
+table.foreign_exchange td.urr {text-align: right; padding-right: 2px;}
+table.foreign_exchange td>input[type=text] { width: 98%; text-align: right; border: none; font: 11px Calibri, Arial, Myriad Pro, Verdana, sans-serif;}
+
+div#detailsOfGuaranteeDisplay {border: 1px solid #0db14b; padding: 5px; width:600px; height:450px; overflow: auto;}
+div#detailsOfGuaranteeDisplay * {font: 13px Calibri, Arial, Myriad Pro, Verdana, sans-serif; position: inherit;}
+
+/* FOR AUTO COMPLETE jQuery */
+.ui-autocomplete {max-height: 150px; overflow-y: auto; /* prevent horizontal scrollbar */ overflow-x: hidden; font: 13px;}
+.autocomplete_value {color: #D5D1CE;}
+#tags, .tags {}
+
+/* IE 6 doesn't support max-height
+* we use height instead, but this forces the menu to always be this tall
+*/
+* html .ui-autocomplete {height: 100px;}
+
+/* FOR LOADING SCREEN */
+#loading_img {background: url(../images/loading.gif) no-repeat; width: 32px; height: 32px; text-indent: -99999px;}
+
+#ui-datepicker-div {display: none;}
+
+
+#cashAmountInLc[readonly] {background-color: white; border: none !important}
+#cashAmountInSettlement[readonly] {background-color: white; border: none !important}
+
+
+/* FOR AUTO COMPLETE/SELECT2 */
+.autocomplete_id_below {font-size: 13px; color: #b2b4b3; text-transform: uppercase;}
+
+/* para sa mga tumabang rows ng jQGrid -- lagyan lang ng <div class="grid_wrapper.. fix"> */
+.fix .ui-jqgrid tr.jqgrow td {white-space: pre !important;}
+
+/*Update Balances and Add Settlement Charges Button*/
+.chargesPaymentButtons{float:right;position:relative;}
+
+ul.swiftErrorMessage{
+    list-style-type:square;
+    color: red;
+    padding : 11px;
+}
+
+.swiftErrorMessage li{
+    list-style-type:square;
+    color: red;
+}
+/**  **/
+
+/* CHECK BUTTON */
+.check_button {background: url(../images/button_check.png) no-repeat; width: 17px; border: none; font-size: 13px; font-weight: bold; margin: 1px 0; padding: 0 0 2px 4px; text-align: left; height: 17px; float: right;}
+.check_button:HOVER {background-position: 0 -17px;}
+.check_button:ACTIVE {background-position: 0 -34px;}
+
+.null_case{
+	text-transform:none !important;
+}
+
+#cutOffDiv {
+	border: 2px solid #0db14b;
+	display: inline-block;            
+    width: 300px;
+    height: 35px;
+    margin: 10px 10px 10px 10px;
+}
+
+.cdt_loading{
+	font-weight: bold; color: #0db14b; font-size: 14px;
+}
+
+.normal_case{
+	text-transform: none !important;
+}
+
+.amendment_special_condition { min-width: 750px; max-width: 750px; }
+.amendment_special_condition textarea { width: 87%; }
+.amendment_special_condition > tbody > tr > td:nth-of-type(1) { min-width: 15px; max-width: 15px; }
+.amendment_special_condition > tbody > tr > td:nth-of-type(2) { min-width: 350px; max-width: 350px; }
+.amendment_special_condition > tbody > tr > td:nth-of-type(3) { min-width: 25px; max-width: 25px; }
+.amendment_special_condition > tbody > tr > td:nth-of-type(4) { min-width: 350px; max-width: 350px; }
+
+.tabs_forms_table.mt759 { width: 67%; }
+.tabs_forms_table.mt759 > tbody > tr > td:nth-of-type(1) { width: 210px; }
+.popup_width_80  { width: 80%; }
+
+.header-pane {
+	width: 800px;
+	background-image: linear-gradient(#0db14b 75%, #666666 25%);
+	border-radius: 15px;
+	margin-left: 37px;
+	padding-left: 15px;
+}
+
+.popup_header {
+	margin: -10px;
+    padding: 10px 10px 0px 10px;
+    background-color: #666666;
+}
+
+#alertMessage {
+    display: block;
+    margin-bottom: 20px;
+}

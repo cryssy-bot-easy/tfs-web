@@ -1,0 +1,50 @@
+function setupExportAdvancePaymentGrids(){
+	var exportAdvancePaymentGridUrl = '';
+	if (referenceType.toLowerCase() == 'ets'){
+		setupJqGridPagerWithHidden('grid_list_export_advance_payment', {height:25,width: 780, loadui: "disable", scrollOffset:0},
+			[['accountNumber', 'Account Number','center'],
+			['modeOfPayment', 'Mode of Payment','center'],
+			['settlementCurrency', 'Settlement Currency','center'],
+			['amount', 'Amount','right'],
+			//['edit','Edit'],
+			['deleteExportAdvancePayment','Delete','center'],
+			['exportAdvanceCurrency', 'Export Advance Currency', 'left', 'hidden'],
+			['exportAdvanceAmount','Export Advance Amount', 'left', 'hidden'],
+			['status','Status', 10, 'left','hidden'],
+			['action',' ', 10, 'left','hidden']], 'grid_pager_export_advance_payment', exportAdvancePaymentGridUrl); //hide action if branch users
+		
+	}else if( referenceType.toLowerCase() == 'data entry'){
+		setupJqGridPagerWithHidden('grid_list_export_advance_payment', {height:25,width: 780, loadui: "disable", scrollOffset:0},
+			[['accountNumber', 'Account Number','center'],
+			['modeOfPayment', 'Mode of Payment','center'],
+			['exportAdvanceCurrency', 'Export Advance Currency','center'],
+			['exportAdvanceAmount','Export Advance Amount','right'],
+			['settlementCurrency', 'Settlement Currency','center'],
+			['amount', 'Amount','right'],
+			//['edit','Edit'],
+			['status','Status','center'],
+			['action',' ','center'],
+			['deleteExportAdvancePayment','Delete', 10, 'left','hidden']], 'grid_pager_export_advance_payment', exportAdvancePaymentGridUrl);
+	}	
+}	
+
+function initExportAdvancePaymentGrid(){
+	setupExportAdvancePaymentGrids();
+
+//		var exportAdvancePaymentGrid=$("#grid_list_export_advance_payment");
+//		exportAdvancePaymentGrid.addRowData("1",{
+//			accountNumber:'100-000-000',
+//			modeOfPayment:'CASA',
+//			exportAdvanceCurrency: 'USD',
+//			exportAdvanceAmount: '200',
+//			settlementCurrency:'USD',
+//			amount:'1,000,000.00',
+//			//edit:'<a href=\"javascript:void(0)\">edit</a>',
+//			deleteExportAdvancePayment:'<a href=\"javascript:void(0)\">delete</a>',
+//			status: "Unpaid",
+//			action: '<button class=\"input_button button_override\">Settle</button>'
+//		});
+}
+
+$(initExportAdvancePaymentGrid);
+

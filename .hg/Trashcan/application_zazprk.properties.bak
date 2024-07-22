@@ -1,0 +1,16 @@
+#Grails Metadata file
+#Tue Feb 06 13:12:46 CST 2024
+app.grails.version=2.0.1
+app.name=tfs-web
+app.servlet.version=2.5
+app.version=0.1
+plugins.webxml=1.4.1
+swift.app.identifier=F
+swift.delivery.monitoring=000000
+swift.io.identifier=I
+swift.lt.identifier=UCPBPHMMAXXX
+swift.message.priority=0000
+swift.obsolence.period=000
+swift.sequence.number=0000000
+swift.service.identifier=01
+swift.session.number=0000

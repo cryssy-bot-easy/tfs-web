@@ -1,0 +1,950 @@
+/**
+ * Created with IntelliJ IDEA.
+ * User: Marv
+ * Date: 2/7/13
+ * Time: 1:25 PM
+ * To change this template use File | Settings | File Templates.
+ */
+
+/**
+ * PROLOGUE:
+ * 	(revision)
+	SCR/ER Number: ER# 20161108-037
+	SCR/ER Description: Double reinstatement entry due to two transaction on an account, first ets was not yet approved  by TSD.
+	[Revised by:] Jesse James Joson
+	[Date revised:] 11/09/2016
+	Program [Revision] Details: Transaction will be created if there is no pending transaction on the said account.
+	PROJECT: WEB
+	MEMBER TYPE  : Javascript
+	Project Name: required-validation-utils
+ * 
+ */
+
+ 
+/** PROLOGUE:
+	 * 	(revision)
+		SCR/ER Number: SCR# IBD-16-0615-01
+		SCR/ER Description: To comply with the requirement for CIF archiving/purging of inactive accounts in TFS.
+		[Revised by:] Jesse James Joson
+		[Date Revised:] 09/22/2016
+		Program [Revision] Details: additional scripts to run account purging
+		PROJECT: WEB
+		MEMBER TYPE  : Javascript
+		Project Name: required-validation-utils.js
+ */
+ 
+ 
+if (!window.console) {
+    console = {
+        log: function () {
+            // do nothing
+            // this is to avoid errors in ie7
+        }
+    };
+}
+
+function executeSaveConfirmationAlert() {
+    if ('undefined' !== typeof formIsChanged && formIsChanged == true) {
+        if (formId != formChanged) {
+            triggerAlertMessage("There were unsaved changes.");
+            return;
+        }
+    } else {
+        action = "save";
+        //openAlert();
+        openSaveAlertWithoutChangeValidate();
+    }
+}
+
+function openSaveAlertWithoutChangeValidate() {
+    var mSave_div = $("#popup_save_confirmation");
+    var mBg = $("#confirmation_background");
+
+    mLoadPopup(mSave_div, mBg);
+    mCenterPopup(mSave_div, mBg);
+}
+
+// parse a date in mm-dd-yyyy format
+function parseDate(input) {
+    var parts = input.match(/(\d+)/g);
+    // new Date(year, month [, date [, hours[, minutes[, seconds[, ms]]]]])
+    return new Date(parts[2], parts[0] - 1, parts[1], 23, 59, 59); // months are 0-based
+}
+
+function validateRequiredDocuments() {
+    if ($("#doc_required_list").length > 0 &&
+        $("#preview_doc_required_list").length > 0) {
+
+        var docRequiredSelected = $("#doc_required_list").jqGrid("getGridParam", "selarrrow").length;
+        var previewDocRequiredCount = $("#preview_doc_required_list").getGridParam("records");
+        
+        //otherDocumentsInstructionsHiddenField is for temporary way of preventing to Prepare w/o saving the Required Doc tab.
+        //removed && $("#otherDocumentsInstructionsHidden").val() != "" - BLOCKER BUG #4488
+        if ((docRequiredSelected > 0 || previewDocRequiredCount > 0) || serviceType.toUpperCase() == "AMENDMENT") {
+            return "success";
+        } else {
+            return "failed";
+        }
+    }
+
+    return "success";
+}
+
+function validateTransmittalLetter() {
+    if ($("#grid_list_clients_documents").length > 0 &&
+        $("#grid_list_transmittal_letter").length > 0) {
+        var clientsDocumentsSelected = $("#grid_list_clients_documents").jqGrid("getGridParam", "selarrrow").length;
+        var transmittalLetterCount = $("#grid_list_transmittal_letter").getGridParam("records");
+
+        if ((clientsDocumentsSelected > 0 || transmittalLetterCount > 0) || serviceType.toUpperCase() == "AMENDMENT" || (documentType.toUpperCase() == "DOMESTIC" && serviceType.toUpperCase() == "NEGOTIATION")) {
+            return "success";
+        } else {
+            return "failed";
+        }
+    }
+
+    return "success";
+}
+
+function validateApproved() {
+	validateCounter = 0;
+	errorCount = 0;
+	if (!(documentClass == "AP" && serviceType.toUpperCase() =="REFUND") && ($("#cashLcPaymentTab").length > 0 && !$("#cashLcPaymentTab").is(":hidden")) || ($("#paymentDetailsTab").length > 0 && !$("#paymentDetailsTab").is(":hidden"))) {
+    	var postUrl = validateSavedProductPaymentsUrl;
+    	if($("#paymentDetailsTab").length > 0 || documentClass in {"AR":1, "AP":1}) {
+    		postUrl = validateSavedProductPayments2Url;
+    	}
+    	var paymentsummarydata = $("#grid_list_cash_payment_summary").jqGrid("getRowData");
+    	if(documentClass in {"AR":1, "AP":1}){
+    		paymentsummarydata = ($("#grid_list_refund_branch").length > 0 ? $("#grid_list_refund_branch") : $("#grid_list_refund_main")).jqGrid("getRowData");
+    	}
+    	$.post(postUrl, {tradeServiceId: $("#tradeServiceId").val(), productPaymentSummary: JSON.stringify(paymentsummarydata),amount: $("#apAmount").val(), amountOfRefund: $("#amountOfRefund").val(), documentType: documentType, serviceType: serviceType, documentClass: documentClass}, function(data){
+    		if(data.success == false || ($("#setupProductPayment").length > 0 && $("#setupProductPayment").val().length == 0)){
+    			
+    			if ($("#cashLcPaymentTab").length > 0 && !(documentClass in {"AR":1, "AP":1}))
+    				triggerAlertMessage(((serviceType.toUpperCase() in {OPENING:1, AMENDMENT:1} && documentSubType1 == "CASH") || (serviceType.toUpperCase() == "ADJUSTMENT" && documentSubType1 == "REGULAR") ? "Cash LC" : serviceType.toUpperCase() == "UA LOAN SETTLEMENT" ? "UA Loan" : "Negotiation") + " Payment did not match.");
+    			if($("#paymentDetailsTab").length > 0 || documentClass in {"AR":1, "AP":1})
+    				triggerAlertMessage("Payment Details did not match.");
+                errorCount++;
+    		}
+    	}).done(validateApproved2).always(validateRequired);
+    } else {
+    	validateApproved2();
+    	validateRequired();
+    }
+}
+
+function validateApproved2() {
+	if (errorCount == 0) {
+		if ($("#proceedsDetailsTab").length > 0 && !$("#proceedsDetailsTab").is(":hidden") || (documentClass == "AP" && serviceType.toUpperCase() =="REFUND")) {
+			var postUrl = validateSavedProceedsPaymentsUrl;
+	    	var paymentsummarydata = $("#grid_list_proceeds_payment_summary").jqGrid("getRowData");
+	    	if(documentClass == "AP"){
+	    		paymentsummarydata = $("#grid_list_refund_branch").length > 0 ? $("#grid_list_refund_branch").jqGrid("getRowData") : $("#grid_list_refund_main").jqGrid("getRowData");
+	    	}
+	    	$.post(postUrl, {tradeServiceId: $("#tradeServiceId").val(), proceedsPaymentSummary: JSON.stringify(paymentsummarydata)}, function(data){
+	    		if(data.success == false){
+	    			
+	    			triggerAlertMessage("Proceeds Payment cannot be empty.");
+	                errorCount++;
+	    		}
+	    	}).done(validateApproved3).always(validateRequired);
+	    } else {
+	    	validateApproved3();
+	    	validateRequired();
+	    }
+	}
+}
+
+function validateApproved3() {
+	if (errorCount == 0) {
+		if ($("#chargesTab").length > 0) {
+	        var postUrl = validateSavedChargesUrl;
+	        var params = {tradeServiceId: $("#tradeServiceId").val()};
+	        $("#chargesTabForm :input").each(function () {
+	            if ($(this).attr("type") == "text" && $(this).parents("table").hasClass("charges_table") && $(this).attr("id") != "totalAmountCharges") {
+	                params[$(this).attr("id")] = $(this).val();
+	            }
+	        });
+	        
+	        $.post(postUrl, params, function (data) {
+	            var error = 0
+	            for (var key in data) {
+	                console.log(data[key]);
+	                error++;
+	            }
+	            if (error > 0) {
+	                triggerAlertMessage("Charges Do Not Match. Please Save Charges.");
+	                errorCount++;
+	            }
+	        }).done(validateApproved4).always(validateRequired);
+	    } else {
+	    	validateApproved4();
+	    	validateRequired()
+	    }
+	}
+}
+
+function validateApproved4() {
+	if (errorCount == 0) {
+	    if ($("#chargesPaymentTab").length > 0) {
+	    	var postUrl = validateSavedChargesPaymentsUrl;
+	    	var paymentsummarydata = $("#grid_list_charges_payment").jqGrid("getRowData");
+	    	$.post(postUrl, {tradeServiceId: $("#tradeServiceId").val(), chargesPaymentSummary: JSON.stringify(paymentsummarydata)}, function(data){
+	    		if(data.success == false || $("#setupServicePayment").val().length == 0){
+	    			triggerAlertMessage("Charges Payment did not match.");
+	                errorCount++;
+	    		}
+	    	}).always(validateRequired);
+	    } else {
+	    	validateRequired()
+	    }
+	}
+}
+
+function validateRequired() {
+	validateCounter++;
+	if (validateCounter == 4){
+		validateCounter = 0
+	    
+	    if (errorCount == 0) {
+		    var error = 0;
+		    var reversal = false;
+		
+		    if (typeof reversalDE != "undefined" && reversalDE) {
+		        reversal = true;
+		    }
+		
+		    // special case for pddts and swift (mt103)
+		    var fromPddts = 0;
+		    var fromMt103 = 0;
+		
+		    if (!reversal) {
+		
+		        $("#body_forms :input").each(function () {
+		
+		            if ($(this).attr("class") != undefined && $(this).attr("class") != null && $(this).attr("class").indexOf("required") != -1) {
+		
+		                if ($(this).val() == "") {
+		                    error++;
+		
+		                    if ($(this).attr("class").indexOf("pddts") != -1) {
+		                        fromPddts++;
+		                    }
+		
+		                    if ($(this).attr("class").indexOf("mt103") != -1) {
+		                        fromMt103++;
+		                    }
+		
+		                    console.log("required\nid : " + $(this).attr("id") + "\nname : " + $(this).attr("name"));
+		                }
+		            }
+		        });
+		    }
+		
+		    if (error > 0) {
+		        if (!reverseEtsFlag) {
+		            triggerError(fromPddts, fromMt103); // comment this if you want to remove required fields validation for all tabs
+		//            executeSaveConfirmationAlert(); // uncomment this if you want to remove required fields validation for all tabs
+		        } else {
+		        	if($("#statusAction").val() != "Prepare" || referenceType != 'DATA_ENTRY' ){
+		        		executeSaveConfirmationAlert();
+		        	} else {
+		        		validateUnpaidPayments2();
+		        	}
+		        }
+		    } else {
+		        if (!reverseEtsFlag) {
+		            // validates transmittal letter
+		            var transmittalLetter = validateTransmittalLetter();
+		
+		            // validates required documents
+		            var requiredDocuments = validateRequiredDocuments();
+		
+		//            transmittalLetter = "success"; // removed validation for local
+		//            requiredDocuments = "success"; // removed validation for local
+		
+		            if (transmittalLetter == "success" && requiredDocuments == "success") {
+		                var validExpiryDate = validateExpiryDate();
+		                if (validExpiryDate == "success") {
+		                    if (typeof documentClass !== 'undefined') { // applies to all transaction as per miss letty
+		                    	if($("#statusAction").val() != "Prepare" || referenceType != 'DATA_ENTRY' ){
+		                    		validateAcceptance();
+		                    	}else{
+		                    		validateUnpaidPayments();
+		                    	}
+		                    } else {
+		                        //                validateFormChange();
+		                    	if($("#statusAction").val() != "Prepare" || referenceType != 'DATA_ENTRY' ){
+		                    		executeSaveConfirmationAlert();
+		                    	} else {
+		                    		validateUnpaidPayments2();
+		                    	}
+		                    }
+		                } else {
+		                    triggerExpired();
+		                }
+		            } else {
+		                if (transmittalLetter == "failed") {
+		                    triggerAlertMessage("Please complete the Transmittal Letter Tab.");
+		                }
+		
+		                if (requiredDocuments == "failed") {
+		                    triggerAlertMessage("Please complete the Required Documents Tab.");
+		                }
+		            }
+		        } else {
+		        	if($("#statusAction").val() != "Prepare" || referenceType != 'DATA_ENTRY' ){
+		        		executeSaveConfirmationAlert();
+		        	} else {
+		        		validateUnpaidPayments2();
+		        	}
+		        }
+		    }
+	    } else {
+	    	errorcount = 0;
+	    }
+	}
+}
+
+function validateUnpaidPayments() {
+	$.post(checkUnpaidPaymentsUrl, {tradeServiceId: $("#tradeServiceId").val()}, function(data){
+		if(data.success == "success"){
+			validateAcceptance();
+		} else {
+			$("#btnPrepare").attr("disabled", "disabled");
+			triggerAlertMessage(data.message);
+		}
+	});
+}
+
+function validateUnpaidPayments2() {
+	$.post(checkUnpaidPaymentsUrl, {tradeServiceId: $("#tradeServiceId").val()}, function(data){
+		if(data.success == "success"){
+			executeSaveConfirmationAlert();
+		} else {
+			$("#btnPrepare").attr("disabled", "disabled");
+			triggerAlertMessage(data.message);
+		}
+	});
+}
+
+function validateAcceptance() {
+    var serviceType = $("#serviceType").val();
+
+    if ($("#reversalEtsNumber").length > 0 && $("#reversalEtsNumber").val() != "") {
+        serviceType += "_Reversal";
+    }
+    
+    var tradeServiceId = $("#tradeServiceId").val();
+    
+    if ($("#reversalDENumber").length > 0 && $("#reversalDENumber").val() != "") {
+    	tradeServiceId = $("#reversalDENumber").val();
+    }
+
+    if ($("#documentClass").val() != 'MT'){
+    $.post(multipleTradeServiceUrl, {tradeServiceId: tradeServiceId,
+                                     tradeProductNumber: $("#documentNumber").val(),
+        serviceType: serviceType}, function (data) {
+        if (data.success == "true") {
+            executeSaveConfirmationAlert();
+        } else {
+            triggerAlertMessage(data.message);
+        }
+    });
+    } else {
+    	executeSaveConfirmationAlert();
+    }
+}
+
+function triggerExpired() {
+    $("#alertMessage").text("Expiry Date is already lapsed. Please change Expiry Date.");
+    triggerAlert();
+    return true;
+}
+
+function validateExpiryDate() {
+    if ($("#expiryDate").length > 0 && referenceType != "ETS" && serviceType == "OPENING") {
+        var expiryDate = parseDate($("#expiryDate").val());
+
+        $.post(getCurrentSystemDateUrl, {}, function (data) {
+            var currentDate = new Date(data.currentSystemDate);
+
+            if (expiryDate < currentDate) {
+                return "failed";
+            } else {
+                return "success";
+            }
+        });
+    } else {
+        return "success";
+    }
+}
+
+function validatePaymentBalance() {
+    var messageString = "";
+
+    if ($(".cash_lc_payment_tab").is(":hidden") == false &&
+        $("#remainingBalanceLc").length > 0 && $("#remainingBalanceLc").val() != "0.00") {
+        console.log("there is product payment tab and balance is " + $("#remainingBalanceLc").val());
+        //return "failed";
+        messageString += "Product Balance must be Zero."
+    }
+
+    if ($("#proceedsDetailsTab").is(":hidden") == false &&
+        $("#grid_list_proceeds_payment_summary").length > 0 &&
+        $("#grid_list_proceeds_payment_summary").jqGrid("getGridParam", "records") < 1) {
+        console.log("there is no payment for settlement to beneficiary saved");
+        //return "failed";
+        if (messageString != "") {
+            messageString += "\n";
+        }
+        messageString += "Proceeds Payment cannot be empty.";
+    }
+
+    if ($(".charges_payment_tab").is(":hidden") == false &&
+        $("#remainingBalance").length > 0 && $("#remainingBalance").val() != "0.00") {
+        console.log("there is service charge payment tab and balance is " + $("#remainingBalance").val());
+        //return "failed";
+        if (messageString != "") {
+            messageString += "\n";
+        }
+        messageString += "Service Charge Balance must be Zero.";
+    }
+
+    //return "success";
+    if (reverseEtsFlag) {
+        messageString = "";
+    }
+
+    return messageString;
+}
+
+/*function validateApproval2() {
+
+    $.post(multipleServiceInstructionUrl, {tradeProductNumber: $("#documentNumber").val()}, function (data) {
+
+        if (data.success == "true") {
+
+            if (serviceType.toUpperCase() == "OPENING" && (documentSubType1 == "REGULAR" || documentSubType1 == "STANDBY")) {
+
+                $.post(inquireFacilityBalance, function (data) {
+
+                    if (data.status == 'success') {
+
+                        doBalanceCheck(0, data.transactionSequenceNumber);
+                    } else {
+
+                        mDisablePopup($("#loading_div"), $("#loading_bg"));  // loading
+                        onSaveValidate();
+
+                    }
+                });
+            } else {
+
+                mDisablePopup($("#loading_div"), $("#loading_bg"));
+                onSaveValidate();
+
+            }
+
+        } else {
+
+            triggerAlertMessage(data.message);
+
+        }
+    });
+
+}*/
+
+function validateOthers() {
+	if(!validateExcessChargesValidationUtils()){
+		return;
+	}
+    
+    // validates multiple ets // ER# 20161108-037 - Add parameter which is needed by the EtsService.groovy
+    $.post(multipleServiceInstructionUrl, {tradeProductNumber: $("#documentNumber").val(), serviceInstructionId: $("#etsNumber").val(), serviceType: $("#serviceType").val()}, function (data) {
+
+        if (data.success == "true") {
+            var paymentBalanceCheck = validatePaymentBalance();
+
+            if (paymentBalanceCheck == "") {
+                mLoadPopup($("#loading_div"), $("#loading_bg"));
+                mCenterPopup($("#loading_div"), $("#loading_bg"));
+
+                if (serviceType == 'Opening' && (documentSubType1 == 'REGULAR' || documentSubType1 == 'STANDBY')) {
+                    $.post(inquireFacilityBalance, function (data) {
+                        if (data.status == 'success') {
+                            doBalanceCheck(0, data.transactionSequenceNumber);
+                        } else {
+                            mDisablePopup($("#loading_div"), $("#loading_bg"));
+                            onSaveValidate();
+                        }
+                    });
+                } else {
+                    mDisablePopup($("#loading_div"), $("#loading_bg"));
+                    onSaveValidate();
+                }
+            } else {
+                triggerAlertMessage(paymentBalanceCheck);
+            }
+        } else {
+            triggerAlertMessage(data.message);
+        }
+    });
+}
+
+function validateExcessChargesValidationUtils(){
+	var excessChargesError=0;
+	var hasRemittanceOrCheckCash=false;
+	var hasRemittanceOrCheckCharges=false;
+    //validate excess charges in cash lc payment tab
+    if($("#grid_list_cash_payment_summary").length > 0){
+    	$.each($("#grid_list_cash_payment_summary").jqGrid("getRowData"),function(idx,val){
+    		if((val.modeOfPayment.toUpperCase().indexOf("REMITTANCE") >= 0 || 
+    			val.modeOfPayment.toUpperCase().indexOf("CHECK") >= 0)){
+    			hasRemittanceOrCheckCash=true;
+    		}
+    	});
+    } else if($("#grid_list_refund_branch").length > 0){
+    	if($("#grid_list_refund_branch").jqGrid('getGridParam', 'records') > 0){
+    	$.each($("#grid_list_refund_branch").jqGrid("getRowData"),function(idx,val){
+    		if((val.modeOfPayment.toUpperCase().indexOf("REMITTANCE") >= 0 || 
+    			val.modeOfPayment.toUpperCase().indexOf("CHECK") >= 0)){
+    			hasRemittanceOrCheckCash=true;
+    		}
+    	});
+    	} else {
+    		triggerAlertMessage("Please add payment for transaction.");
+    		excessChargesError++;
+    	}
+    }
+    
+    //validate excess charges in charges payment tab
+    if('undefined' !== typeof $("#grid_list_charges_payment")){
+    	$.each($("#grid_list_charges_payment").jqGrid("getRowData"),function(idx,val){
+    		if((val.modeOfPayment.toUpperCase().indexOf("REMITTANCE") >= 0 || 
+    				val.modeOfPayment.toUpperCase().indexOf("CHECK") >= 0)){
+    			hasRemittanceOrCheckCharges=true;
+    		}
+    	});
+    }
+    
+    if(!hasRemittanceOrCheckCash && $("#excessAmountLc").length > 0){
+    	if(parseInt($("#excessAmountLc").val(),10) > 0){
+    		triggerAlertMessage("Excess amount cannot be greater than zero if mode of payment does not include Remittance or Check");
+    		excessChargesError++;
+    	}
+    } else if(!hasRemittanceOrCheckCash && $("#excessAmount").length > 0){
+    	if(parseInt($("#excessAmount").val(),10) > 0){
+    		triggerAlertMessage("Excess amount cannot be greater than zero if mode of payment does not include Remittance");
+    		excessChargesError++;
+    	}
+    }
+
+    if(!hasRemittanceOrCheckCharges && 'undefined' !== typeof $("#excessAmountCharges")){
+    	if(parseInt($("#excessAmountCharges").val(),10) > 0){
+    		triggerAlertMessage("Excess amount cannot be greater than zero if mode of payment does not include Remittance or Check");
+    		excessChargesError++;
+    	}
+    }
+
+    if(excessChargesError > 0){
+    	return false;
+    }else{
+    	return true;
+    }
+}
+var validateCounter = 0
+var errorCount = 0;
+// this is called only if user group is branch
+function validateApproval() {
+    // validates charges only if chargesTab is present and is not hidden
+	if (($("#chargesTab").length == 0) && ($("#chargesPaymentTab").length == 0) && ($("#cashLcPaymentTab").length == 0 && $("#paymentDetailsTab").length == 0)) {
+		validateOthers();
+	} else {
+		validateCounter = 0;
+		errorCount = 0;
+		if (!(documentClass == "AP" && serviceType.toUpperCase() =="REFUND") && ($("#cashLcPaymentTab").length > 0 && !$("#cashLcPaymentTab").is(":hidden")) || ($("#paymentDetailsTab").length > 0 && !$("#paymentDetailsTab").is(":hidden"))) {
+	    	var postUrl = validateSavedProductPaymentsUrl;
+	    	if($("#paymentDetailsTab").length > 0 || documentClass in {"AR":1, "AP":1}) {
+	    		postUrl = validateSavedProductPayments2Url;
+	    	}
+	    	var paymentsummarydata = $("#grid_list_cash_payment_summary").jqGrid("getRowData");
+	    	if(documentClass in {"AR":1, "AP":1}){
+	    		paymentsummarydata = $("#grid_list_refund_branch").jqGrid("getRowData");
+	    	}
+	    	$.post(postUrl, {tradeServiceId: $("#tradeServiceId").val(), productPaymentSummary: JSON.stringify(paymentsummarydata), amountOfRefund: $("#amountOfRefund").val(), serviceType: serviceType, documentType: documentType}, function(data){
+	    		if(data.success == false || ($("#setupProductPayment").length > 0 && $("#setupProductPayment").val().length == 0)){	    			
+	    			if ($("#cashLcPaymentTab").length > 0 && !(documentClass in {"AR":1, "AP":1}))
+	    				triggerAlertMessage(((serviceType.toUpperCase() in {OPENING:1, AMENDMENT:1} && documentSubType1 == "CASH") || (serviceType.toUpperCase() == "ADJUSTMENT" && documentSubType1 == "REGULAR") ? "Cash LC" : serviceType.toUpperCase() == "UA LOAN SETTLEMENT" ? "UA Loan" : "Negotiation") + " Payment did not match.");
+	    			if($("#paymentDetailsTab").length > 0 || documentClass in {"AR":1, "AP":1})
+	    				triggerAlertMessage("Payment Details did not match1.");
+	                errorCount++;
+	    		}
+	    	}).done(validateApproval2).always(validateApprovalCheck);
+	    } else {
+	    	validateApproval2();
+	    	validateApprovalCheck();
+	    }
+	    
+    }
+}
+
+function validateApproval2() {
+	if (errorCount == 0) {
+		if ($("#proceedsDetailsTab").length > 0 && !$("#proceedsDetailsTab").is(":hidden") || (documentClass == "AP" && serviceType.toUpperCase() =="REFUND")) {
+	    	var postUrl = validateSavedProceedsPaymentsUrl;
+	    	var paymentsummarydata = $("#grid_list_proceeds_payment_summary").jqGrid("getRowData");
+	    	if(documentClass == "AP"){
+	    		paymentsummarydata = $("#grid_list_refund_branch").length > 0 ? $("#grid_list_refund_branch").jqGrid("getRowData") : $("#grid_list_refund_main").jqGrid("getRowData");
+	    	}
+	    	$.post(postUrl, {tradeServiceId: $("#tradeServiceId").val(), proceedsPaymentSummary: JSON.stringify(paymentsummarydata)}, function(data){
+	    		if(data.success == false){
+	    			
+	    			triggerAlertMessage("Proceeds Payment cannot be empty.");
+	                errorCount++;
+	    		}
+	    	}).done(validateApproval3).always(validateApprovalCheck);
+	    } else {
+	    	validateApproval3();
+	    	validateApprovalCheck();
+	    }
+	}
+}
+
+function validateApproval3() {
+	if (errorCount == 0) {
+		if ($("#chargesTab").length > 0) {
+	        var postUrl = validateSavedChargesUrl;
+	        var params = {tradeServiceId: $("#tradeServiceId").val()};
+	        $("#chargesTabForm :input").each(function () {
+	            if ($(this).attr("type") == "text" && $(this).parents("table").hasClass("charges_table") && $(this).attr("id") != "totalAmountCharges") {
+	                params[$(this).attr("id")] = $(this).val();
+	            }
+	        });
+	        
+	        $.post(postUrl, params, function (data) {
+	            var error = 0
+	            for (var key in data) {
+	                console.log(data[key]);
+	                error++;
+	            }
+	            if (error > 0) {
+	                triggerAlertMessage("Charges Do Not Match. Please Save Charges.");
+	                errorCount++;
+	            }
+	        }).done(validateApproval4).always(validateApprovalCheck);
+	    } else {
+	    	validateApproval4();
+	    	validateApprovalCheck()
+	    }
+	}
+}
+
+function validateApproval4() {
+	if (errorCount == 0) {
+	    if ($("#chargesPaymentTab").length > 0) {
+	    	var postUrl = validateSavedChargesPaymentsUrl;
+	    	var paymentsummarydata = $("#grid_list_charges_payment").jqGrid("getRowData");
+	    	$.post(postUrl, {tradeServiceId: $("#tradeServiceId").val(), chargesPaymentSummary: JSON.stringify(paymentsummarydata)}, function(data){
+	    		if(data.success == false || $("#setupServicePayment").val().length == 0){
+	    			triggerAlertMessage("Charges Payment did not match.");
+	                errorCount++;
+	    		}
+	    	}).always(validateApprovalCheck);
+	    } else {
+	    	validateApprovalCheck()
+	    }
+	}
+}
+
+function validateApprovalCheck() {
+	validateCounter++;
+	if (validateCounter == 4){
+		validateCounter = 0
+	    
+	    if (errorCount == 0) {
+	    	var reversal = false;
+
+	        if (typeof reversalDE != "undefined" && reversalDE) {
+	            reversal = true;
+	        }
+	        if (!reversal) {
+		    	var error = 0;
+		    	$("#body_forms :input").each(function () {
+	
+		            if ($(this).attr("class") != undefined && $(this).attr("class") != null && $(this).attr("class").indexOf("required") != -1) {
+	
+		                if ($(this).val() == "") {
+		                    error++;
+		                    console.log("required\nid : " + $(this).attr("id") + "\nname : " + $(this).attr("name"));
+		                }
+		            }
+		        });
+		    	if (error > 0) {
+		    		triggerAlertMessage("There were unsaved changes.");
+		    	} else {
+		    		validateOthers()
+		    	}
+	        } else {
+	        	validateOthers()
+	        }
+	    } else {
+	    	errorcount = 0;
+	    }
+	}
+}
+
+function validatePayments() {
+    $.post(validatePaymentsUrl, {tradeServiceId: $("#tradeServiceId").val()}, function (data) {
+        if (data.success == false) {
+            if (reversalDataEntry) {
+                triggerAlertMessage("Please reverse all payments first.");
+            } else {
+                triggerAlertMessage("Please reverse all payments first before returning to Branch.");
+            }
+            return true;
+        } else {
+            executeSaveConfirmationAlert();
+        }
+    });
+}
+
+function validateFromReversal() {
+    $.post(validatePaymentsUrl, {tradeServiceId: $("#tradeServiceId").val()}, function (data) {
+        if (data.success == false) {
+            triggerAlertMessage("Please reverse all payments first.");
+            return true;
+        } else {
+            executeSaveConfirmationAlert();
+        }
+    });
+}
+
+function doBalanceCheck(pollLimit, transactionSequenceNumber) {
+    console.log('sequence number: ' + transactionSequenceNumber);
+//    $.ajax({
+//        url: getFacilityBalanceResult, // JSON_URL is a global variable
+//        dataType: 'json',
+//        error: function(xhr_data) {
+//            mDisablePopup($("#loading_div"), $("#loading_bg"));
+//            triggerAlertMessage("An error occurred while retrieving your facility balance.");
+//        },
+//        success: function(xhr_data) {
+//            console.log(xhr_data.toString());
+//            console.log(xhr_data.status);
+//
+//            if (xhr_data.status == 'pending') {
+//                if (pollLimit < 6) {
+//                    pollLimit++;
+//                    setTimeout(function() { doBalanceCheck(pollLimit,transactionSequenceNumber); }, 10000); // wait 10 seconds then retry
+////                    wait(10000); doBalanceCheck(pollLimit,transactionSequenceNumber); //this is a "blocking" version of the function above
+//                }else{
+//                    mDisablePopup($("#loading_div"), $("#loading_bg"));
+//                    triggerAlertMessage("No response received from Silverlake.");
+//                }
+//            }else if(xhr_data.status == 'rejected'){
+//                mDisablePopup($("#loading_div"), $("#loading_bg"));
+//                triggerAlertMessage("Transaction has been rejected.\n" + xhr_data.error);
+//            }else {
+//                mDisablePopup($("#loading_div"), $("#loading_bg"));
+//                if(xhr_data.isBalanceSufficient == true){
+//                    onSaveValidate();
+//                }else if(xhr_data.hasCramApproval == true){
+//                    onSaveValidate();
+//                    triggerAlertMessage("There is an over-availment in facility. Facility balance is: " + xhr_data.balance);
+//                }else{
+//                    triggerAlertMessage("Facility balance is insufficient. Current balance is: " + xhr_data.balance);
+//                }
+//
+//            }
+//        },
+//        contentType: 'application/json',
+//        data: {
+//            balanceQueryRequestId : transactionSequenceNumber
+//        }
+//    });
+
+    var params = {
+        balanceQueryRequestId: transactionSequenceNumber
+    };
+
+    mLoadPopup($("#loading_div"), $("#loading_bg"));
+    mCenterPopup($("#loading_div"), $("#loading_bg"));
+
+    $.post(getFacilityBalanceResult, params,function (data) {
+        console.log(JSON.stringify(data));
+        console.log(data.status);
+
+        if (data.status == 'pending') {
+            if (pollLimit < 6) {
+                pollLimit++;
+                setTimeout(function () {
+                    doBalanceCheck(pollLimit, transactionSequenceNumber);
+                }, 10000); // wait 10 seconds then retry
+//                    wait(10000); doBalanceCheck(pollLimit,transactionSequenceNumber); //this is a "blocking" version of the function above
+            } else {
+                mDisablePopup($("#loading_div"), $("#loading_bg"));
+                triggerAlertMessage("No response received from Silverlake.");
+            }
+        } else if (data.status == 'rejected') {
+            mDisablePopup($("#loading_div"), $("#loading_bg"));
+            triggerAlertMessage("Transaction has been rejected.\n" + data.error);
+        } else {
+            mDisablePopup($("#loading_div"), $("#loading_bg"));
+            if (data.isBalanceSufficient == true) {
+                onSaveValidate();
+            } else if (data.hasCramApproval == true) {
+                onSaveValidate();
+                triggerAlertMessage("There is an over-availment in facility. Facility balance is: " + data.balance);
+            } else {
+                triggerAlertMessage("Facility balance is insufficient. Current balance is: " + data.balance);
+            }
+
+        }
+    }).error(function () {
+            mDisablePopup($("#loading_div"), $("#loading_bg"));
+            triggerAlertMessage("An error occurred while retrieving your facility balance.");
+        });
+
+
+}
+
+function wait(ms) {
+    var start = +(new Date());
+    while (new Date() - start < ms);
+}
+
+
+function triggerError(fromPddts, fromMt103) {
+    if (fromPddts > 0) {
+        triggerAlertMessage("Please fill in all the required fields in PDDTS tab in Payment Processing.");
+        return true;
+    }
+
+    if (fromMt103 > 0) {
+        triggerAlertMessage("Please fill in all the required fields in MT103 tab in Payment Processing.");
+        return true;
+    }
+
+    triggerAlertMessage("Please fill in all the required fields in all tabs.");
+    return true;
+}
+
+function checkAllMtIfValid() {
+    var msgType;
+    var mtArray = [];
+
+    $(".accordionActions a").filter(function () {
+        if ("undefined" !== typeof $(this).attr("onclick") &&
+            (($(this).css("display") != "none" && !$(this).is("a[class*='disable']")) || $(this).attr("class").indexOf("hideMe") != -1) &&
+            $(this).attr("onclick").indexOf("goToViewMt(") != -1) {
+            return $(this);
+        } else {
+            return false;
+        }
+    }).each(function () {
+        msgType = $(this).attr("onclick").substring(11, 14);
+        mtArray.push(msgType);
+    });
+
+    if (mtArray.length > 0) {
+        mCenterPopup($("#loading_div"), $("#loading_bg"));
+        mLoadPopup($("#loading_div"), $("#loading_bg"));
+
+        $.post(checkMtUrl, {messages: mtArray.toString()},
+            function (data) {
+                mDisablePopup($("#loading_div"), $("#loading_bg"));
+                if ("" != data.error) {
+                    triggerAlertMessage(data.error);
+                } else {
+                    if ('function' === typeof onSaveValidate) {
+                        onSaveValidate();
+                    } else {
+//                        validateRequired();
+                    	validateApproved();
+                    }
+                }
+            }).fail(function () {
+                mDisablePopup($("#loading_div"), $("#loading_bg"));
+            });
+    } else {
+        if ('function' === typeof onSaveValidate) {
+            onSaveValidate();
+        } else {
+//            validateRequired();
+        	validateApproved
+        }
+    }
+}
+
+function validateMtAndRequired() {
+    var msgType;
+    var mtArray = [];
+
+    $(".accordionActions a").filter(function () {
+        if ("undefined" !== typeof $(this).attr("onclick") &&
+            (($(this).css("display") != "none" && !$(this).is("a[class*='disable']")) || $(this).attr("class").indexOf("hideMe") != -1) &&
+            $(this).attr("onclick").indexOf("goToViewMt(") != -1) {
+            return $(this);
+        } else {
+            return false;
+        }
+    }).each(function () {
+            msgType = $(this).attr("onclick").substring(11, 14);
+            mtArray.push(msgType);
+        });
+
+    if(('undefined' !== typeof $("#documentClass") && $("#documentClass").val() == "MT") &&
+    	('undefined' !== typeof $("#serviceType") && $("#serviceType").val() == "CREATE") && 
+    	'undefined' !== typeof $("#messageType")){
+    		mtArray.push($("#messageType").val());
+    		if(checkMtUrl.indexOf("outgoingTradeServiceId") == -1){
+    			checkMtUrl+="?outgoingTradeServiceId="+$("#outgoingTradeServiceId").val()    			
+    		}
+    }
+
+    if (mtArray.length > 0) {
+        mCenterPopup($("#loading_div"), $("#loading_bg"));
+        mLoadPopup($("#loading_div"), $("#loading_bg"));
+
+        $.post(checkMtUrl, {messages: mtArray.toString()},
+            function (data) {
+                mDisablePopup($("#loading_div"), $("#loading_bg"));
+                if ("" != data.error) {
+                    triggerAlertMessage(data.error);
+                } else {
+                    if ('function' === typeof onSaveValidate && formId != "#instructionsAndRoutingTabForm") {
+                        onSaveValidate();
+                    } else {
+//                        validateRequired();
+                    	validateApproved();
+                    }
+                }
+            }).fail(function () {
+                mDisablePopup($("#loading_div"), $("#loading_bg"));
+            });
+    } else {
+        if ('function' === typeof onSaveValidate && formId != "#instructionsAndRoutingTabForm") {
+            onSaveValidate();
+        } else {
+//            validateRequired();
+        	validateApproved();
+        }
+    }
+}
+
+
+$(document).ready(function () {
+
+    $(".checkMt").click(checkAllMtIfValid);
+//    $(".checkMt").click(validateRequired);
+//    $(".route").click(validateRequired);
+    $(".route").click(validateApproved);
+//    $(".requiresBalanceCheck").click(validateApproval2);
+    $(".requiresBalanceCheck").click(validateApproval);
+
+    $(".checkMtAndRequired").click(validateMtAndRequired);
+
+    $(".checkPayments").click(validatePayments);
+});

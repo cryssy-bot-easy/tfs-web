@@ -1,0 +1,82 @@
+grails.servlet.version = "2.5" // Change depending on target container compliance (2.5 or 3.0)
+grails.project.class.dir = "target/classes"
+grails.project.test.class.dir = "target/test-classes"
+grails.project.test.reports.dir = "target/test-reports"
+grails.project.target.level = 1.6
+grails.project.source.level = 1.6
+grails.project.war.file = "target/${appName}.war"
+
+grails.project.dependency.resolution = {
+    // inherit Grails' default dependencies
+    inherits("global") {
+        // uncomment to disable ehcache
+        // excludes 'ehcache'
+    }
+    log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    checksums true // Whether to verify checksums on resolve
+
+    repositories {
+        inherits true // Whether to inherit repository definitions from plugins
+        mavenLocal()
+        grailsPlugins()
+        grailsHome()
+        grailsCentral()
+        mavenCentral()
+        mavenRepo "file:/D:/m2/repository"
+
+        // uncomment these to enable remote dependency resolution from public Maven repositories
+        //mavenCentral()
+        //mavenLocal()
+        //mavenRepo "http://snapshots.repository.codehaus.org"
+        //mavenRepo "http://repository.codehaus.org"
+        //mavenRepo "http://download.java.net/maven/2/"
+        //mavenRepo "http://repository.jboss.com/maven2/"
+
+        mavenRepo "https://repo.grails.org/grails/core" 
+        mavenRepo "https://repo.grails.org/grails/plugins"  
+    }
+    dependencies {
+        // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+
+        // runtime 'mysql:mysql-connector-java:5.1.16'
+        compile ('com.incuventure:dddcqrs:1.0-SNAPSHOT') { transitive=false }
+        compile ('com.ucpb:tfs-app:1.0-SNAPSHOT') { transitive=false }
+        compile ('org.springframework:spring-remoting:2.0.8')
+        compile ('com.ucpb:tfs-swift:1.0-SNAPSHOT')  {
+            transitive = false
+            excludes([group: "org.springframework", name: "spring-core"], [group: "org.springframework", name: "spring-context"],[group: "org.springframework",name: "spring-integration-core"],
+                    [group: "org.springframework", name: "spring-integration-file"],[group: "org.springframework", name:  "spring-integration-ip"],[ group: "org.hibernate", name : "hibernate-validator"])
+        }
+        compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.2') {
+            excludes "commons-logging", "xml-apis", "groovy"
+//            transitive=false
+        }
+        compile ('com.google.code.gson:gson:2.2.2')
+        compile('org.apache.httpcomponents:httpmime:4.0.3')
+        compile('jfree:jcommon:1.0.16')
+        compile('joda-time:joda-time:2.0')
+        // compile ":grails-melody:1.51.0"
+
+        compile('org.eclipse.jetty:jetty-servlets:7.6.15.v20140411')
+		compile('org.grails.plugins:xframeoptions:1.0')
+    }
+
+    plugins {
+        runtime ":hibernate:$grailsVersion"
+        runtime ":jquery:1.7.1"
+        // runtime ":resources:1.1.6"
+        runtime ":resources:1.2.8"
+
+        // Uncomment these (or add new ones) to enable additional resources capabilities
+        runtime ":zipped-resources:1.0.1"
+        runtime ":cached-resources:1.1"
+        runtime ":cache-headers:1.1.7"
+		
+		runtime ":xframeoptions:1.0"
+
+        compile ":yui-war-minify:1.5"
+        // runtime ":yui-minify-resources:0.1.5"
+
+        build ":tomcat:$grailsVersion"
+    }
+}

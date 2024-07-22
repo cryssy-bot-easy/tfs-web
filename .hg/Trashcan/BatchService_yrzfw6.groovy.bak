@@ -1,0 +1,54 @@
+package com.ucpb.tfsweb.batch
+
+import java.text.SimpleDateFormat
+import java.util.GregorianCalendar
+
+class BatchService {
+
+	def coreAPIService
+	
+	def executeInterfaceMethods(params,methodNames){
+		
+		GregorianCalendar calendar = GregorianCalendar.getInstance()
+		SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy")
+		def passedParams
+		if(params.onlineReportDate != null){
+			passedParams = ['date':formatter.format(new SimpleDateFormat("MM/dd/yyyy").parse(params.onlineReportDate))]
+		}else{
+		
+			if(params.interface2Check!=null){
+				
+				if(params.interface2Check == "true"){
+					
+					passedParams = ['dateFrom':formatter.format(new SimpleDateFormat("MM/dd/yyyy").parse(params.dateOfTransactionFrom))]
+					passedParams << ['dateTo':formatter.format(new SimpleDateFormat("MM/dd/yyyy").parse(params.dateOfTransactionTo))]
+				}
+			}else{
+				passedParams = ['date':formatter.format(calendar.getTime())]
+			}
+			
+		}
+
+		ArrayList<String> methodNamesTemp = methodNames
+		
+		if(params.adhoc == "true" && params.methodName != null){
+			methodNamesTemp.clear()
+			methodNamesTemp.add(params.methodName)
+		}
+		def returnValue;
+		def successList=[]		
+		for(String method : methodNamesTemp){
+			try{
+				returnValue = coreAPIService.dummySendQuery(passedParams, "batch/${method}")
+				if(returnValue.success){
+					successList.add(returnValue.name)
+				}
+			}catch(Exception e){
+				e.printStackTrace()
+			
+			}
+		}
+		
+		return successList
+	}
+}

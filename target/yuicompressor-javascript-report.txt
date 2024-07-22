@@ -1,0 +1,236 @@
+
+[WARNING] nullTry to use a single 'var' statement per scope.
+=Spry.Widget.Accordion.loadQueue; ---> var  <--- qlen=q.length;for(var i
+[WARNING] nullTry to use a single 'var' statement per scope.
+var qlen=q.length;for( ---> var  <--- i=0;i<qlen;i++
+[WARNING] nullTry to use a single 'var' statement per scope.
+){var panelA=this.currentPanel; ---> var  <--- panelB=panel;if(!panelB||panelA
+[WARNING] nullTry to use a single 'var' statement per scope.
+||panelA==panelB){return;} ---> var  <--- contentA;if(panelA){contentA=this
+[WARNING] nullTry to use a single 'var' statement per scope.
+=this.getPanelContent(panelA);} ---> var  <--- contentB=this.getPanelContent(panelB);if
+[WARNING] nullTry to use a single 'var' statement per scope.
+var panels=this.getPanels(); ---> var  <--- curPanelIndex=this.getCurrentPanelIndex();if(
+[WARNING] nullTry to use a single 'var' statement per scope.
+var panels=this.getPanels(); ---> var  <--- curPanelIndex=this.getCurrentPanelIndex();if(
+[WARNING] nullTry to use a single 'var' statement per scope.
+.nextPanelKeyCode)){returntrue;} ---> var  <--- panels=this.getPanels();if(
+[WARNING] nullTry to use a single 'var' statement per scope.
+length<1){returnfalse;} ---> var  <--- currentPanel=this.currentPanel?this.currentPanel:
+[WARNING] nullTry to use a single 'var' statement per scope.
+this.currentPanel:panels[0]; ---> var  <--- nextPanel=(key==this.nextPanelKeyCode)?
+[WARNING] nullTry to use a single 'var' statement per scope.
+(panel);if(tab){ ---> var  <--- self=this;Spry.Widget.Accordion.
+[WARNING] nullTry to use a single 'var' statement per scope.
+=this.getPanels();for( ---> var  <--- i=0;i<panels.length;
+[WARNING] nullTry to use a single 'var' statement per scope.
+;}if(this.enableKeyboardNavigation){ ---> var  <--- tabIndexAttr=this.element.attributes.getNamedItem(
+[WARNING] nullTry to use a single 'var' statement per scope.
+("tabindex");if(tabIndexAttr){ ---> var  <--- self=this;Spry.Widget.Accordion.
+[WARNING] nullTry to use a single 'var' statement per scope.
+=this.getPanels();for( ---> var  <--- i=0;i<panels.length;
+[WARNING] nullTry to use a single 'var' statement per scope.
+element){var children=[]; ---> var  <--- child=element.firstChild;while(child)
+[WARNING] nullTry to use a single 'var' statement per scope.
+=accordion.getPanels();for( ---> var  <--- i=0;i<panels.length;
+[WARNING] nullTry to use a single 'var' statement per scope.
+<panels.length;i++){ ---> var  <--- p=panels[i];var c=
+[WARNING] nullTry to use a single 'var' statement per scope.
+{var p=panels[i]; ---> var  <--- c=accordion.getPanelContent(p);if
+[WARNING] nullTry to use a single 'var' statement per scope.
+(p);if(c){ ---> var  <--- h=c.offsetHeight;if(h==
+[WARNING] nullTry to use a single 'var' statement per scope.
+p==panel||h>0){ ---> var  <--- obj=new Object;obj.panel=p
+[WARNING] nullInvalid hint syntax: use strict
+(function(){ ---> "use strict" <--- ;angular.module("ApplicationModule",[])
+[ERROR] null5395:39missing name after . operator
+[ERROR] null5398:41missing name after . operator
+[ERROR] null1:0Compilation produced 2 syntax errors.
+[WARNING] nullTry to use a single 'var' statement per scope.
+=Spry.Widget.Accordion.loadQueue; ---> var  <--- qlen=q.length;for(var i
+[WARNING] nullTry to use a single 'var' statement per scope.
+var qlen=q.length;for( ---> var  <--- i=0;i<qlen;i++
+[WARNING] nullTry to use a single 'var' statement per scope.
+){var panelA=this.currentPanel; ---> var  <--- panelB=panel;if(!panelB||panelA
+[WARNING] nullTry to use a single 'var' statement per scope.
+||panelA==panelB){return;} ---> var  <--- contentA;if(panelA){contentA=this
+[WARNING] nullTry to use a single 'var' statement per scope.
+=this.getPanelContent(panelA);} ---> var  <--- contentB=this.getPanelContent(panelB);if
+[WARNING] nullTry to use a single 'var' statement per scope.
+var panels=this.getPanels(); ---> var  <--- curPanelIndex=this.getCurrentPanelIndex();if(
+[WARNING] nullTry to use a single 'var' statement per scope.
+var panels=this.getPanels(); ---> var  <--- curPanelIndex=this.getCurrentPanelIndex();if(
+[WARNING] nullTry to use a single 'var' statement per scope.
+.nextPanelKeyCode)){returntrue;} ---> var  <--- panels=this.getPanels();if(
+[WARNING] nullTry to use a single 'var' statement per scope.
+length<1){returnfalse;} ---> var  <--- currentPanel=this.currentPanel?this.currentPanel:
+[WARNING] nullTry to use a single 'var' statement per scope.
+this.currentPanel:panels[0]; ---> var  <--- nextPanel=(key==this.nextPanelKeyCode)?
+[WARNING] nullTry to use a single 'var' statement per scope.
+(panel);if(tab){ ---> var  <--- self=this;Spry.Widget.Accordion.
+[WARNING] nullTry to use a single 'var' statement per scope.
+=this.getPanels();for( ---> var  <--- i=0;i<panels.length;
+[WARNING] nullTry to use a single 'var' statement per scope.
+;}if(this.enableKeyboardNavigation){ ---> var  <--- tabIndexAttr=this.element.attributes.getNamedItem(
+[WARNING] nullTry to use a single 'var' statement per scope.
+("tabindex");if(tabIndexAttr){ ---> var  <--- self=this;Spry.Widget.Accordion.
+[WARNING] nullTry to use a single 'var' statement per scope.
+=this.getPanels();for( ---> var  <--- i=0;i<panels.length;
+[WARNING] nullTry to use a single 'var' statement per scope.
+element){var children=[]; ---> var  <--- child=element.firstChild;while(child)
+[WARNING] nullTry to use a single 'var' statement per scope.
+=accordion.getPanels();for( ---> var  <--- i=0;i<panels.length;
+[WARNING] nullTry to use a single 'var' statement per scope.
+<panels.length;i++){ ---> var  <--- p=panels[i];var c=
+[WARNING] nullTry to use a single 'var' statement per scope.
+{var p=panels[i]; ---> var  <--- c=accordion.getPanelContent(p);if
+[WARNING] nullTry to use a single 'var' statement per scope.
+(p);if(c){ ---> var  <--- h=c.offsetHeight;if(h==
+[WARNING] nullTry to use a single 'var' statement per scope.
+p==panel||h>0){ ---> var  <--- obj=new Object;obj.panel=p
+[WARNING] nullInvalid hint syntax: use strict
+(function(){ ---> "use strict" <--- ;angular.module("ApplicationModule",[])
+[ERROR] null5395:39missing name after . operator
+[ERROR] null5398:41missing name after . operator
+[ERROR] null1:0Compilation produced 2 syntax errors.
+[WARNING] nullTry to use a single 'var' statement per scope.
+=Spry.Widget.Accordion.loadQueue; ---> var  <--- qlen=q.length;for(var i
+[WARNING] nullTry to use a single 'var' statement per scope.
+var qlen=q.length;for( ---> var  <--- i=0;i<qlen;i++
+[WARNING] nullTry to use a single 'var' statement per scope.
+){var panelA=this.currentPanel; ---> var  <--- panelB=panel;if(!panelB||panelA
+[WARNING] nullTry to use a single 'var' statement per scope.
+||panelA==panelB){return;} ---> var  <--- contentA;if(panelA){contentA=this
+[WARNING] nullTry to use a single 'var' statement per scope.
+=this.getPanelContent(panelA);} ---> var  <--- contentB=this.getPanelContent(panelB);if
+[WARNING] nullTry to use a single 'var' statement per scope.
+var panels=this.getPanels(); ---> var  <--- curPanelIndex=this.getCurrentPanelIndex();if(
+[WARNING] nullTry to use a single 'var' statement per scope.
+var panels=this.getPanels(); ---> var  <--- curPanelIndex=this.getCurrentPanelIndex();if(
+[WARNING] nullTry to use a single 'var' statement per scope.
+.nextPanelKeyCode)){returntrue;} ---> var  <--- panels=this.getPanels();if(
+[WARNING] nullTry to use a single 'var' statement per scope.
+length<1){returnfalse;} ---> var  <--- currentPanel=this.currentPanel?this.currentPanel:
+[WARNING] nullTry to use a single 'var' statement per scope.
+this.currentPanel:panels[0]; ---> var  <--- nextPanel=(key==this.nextPanelKeyCode)?
+[WARNING] nullTry to use a single 'var' statement per scope.
+(panel);if(tab){ ---> var  <--- self=this;Spry.Widget.Accordion.
+[WARNING] nullTry to use a single 'var' statement per scope.
+=this.getPanels();for( ---> var  <--- i=0;i<panels.length;
+[WARNING] nullTry to use a single 'var' statement per scope.
+;}if(this.enableKeyboardNavigation){ ---> var  <--- tabIndexAttr=this.element.attributes.getNamedItem(
+[WARNING] nullTry to use a single 'var' statement per scope.
+("tabindex");if(tabIndexAttr){ ---> var  <--- self=this;Spry.Widget.Accordion.
+[WARNING] nullTry to use a single 'var' statement per scope.
+=this.getPanels();for( ---> var  <--- i=0;i<panels.length;
+[WARNING] nullTry to use a single 'var' statement per scope.
+element){var children=[]; ---> var  <--- child=element.firstChild;while(child)
+[WARNING] nullTry to use a single 'var' statement per scope.
+=accordion.getPanels();for( ---> var  <--- i=0;i<panels.length;
+[WARNING] nullTry to use a single 'var' statement per scope.
+<panels.length;i++){ ---> var  <--- p=panels[i];var c=
+[WARNING] nullTry to use a single 'var' statement per scope.
+{var p=panels[i]; ---> var  <--- c=accordion.getPanelContent(p);if
+[WARNING] nullTry to use a single 'var' statement per scope.
+(p);if(c){ ---> var  <--- h=c.offsetHeight;if(h==
+[WARNING] nullTry to use a single 'var' statement per scope.
+p==panel||h>0){ ---> var  <--- obj=new Object;obj.panel=p
+[WARNING] nullInvalid hint syntax: use strict
+(function(){ ---> "use strict" <--- ;angular.module("ApplicationModule",[])
+[ERROR] null5395:39missing name after . operator
+[ERROR] null5398:41missing name after . operator
+[ERROR] null1:0Compilation produced 2 syntax errors.
+[WARNING] nullTry to use a single 'var' statement per scope.
+=Spry.Widget.Accordion.loadQueue; ---> var  <--- qlen=q.length;for(var i
+[WARNING] nullTry to use a single 'var' statement per scope.
+var qlen=q.length;for( ---> var  <--- i=0;i<qlen;i++
+[WARNING] nullTry to use a single 'var' statement per scope.
+){var panelA=this.currentPanel; ---> var  <--- panelB=panel;if(!panelB||panelA
+[WARNING] nullTry to use a single 'var' statement per scope.
+||panelA==panelB){return;} ---> var  <--- contentA;if(panelA){contentA=this
+[WARNING] nullTry to use a single 'var' statement per scope.
+=this.getPanelContent(panelA);} ---> var  <--- contentB=this.getPanelContent(panelB);if
+[WARNING] nullTry to use a single 'var' statement per scope.
+var panels=this.getPanels(); ---> var  <--- curPanelIndex=this.getCurrentPanelIndex();if(
+[WARNING] nullTry to use a single 'var' statement per scope.
+var panels=this.getPanels(); ---> var  <--- curPanelIndex=this.getCurrentPanelIndex();if(
+[WARNING] nullTry to use a single 'var' statement per scope.
+.nextPanelKeyCode)){returntrue;} ---> var  <--- panels=this.getPanels();if(
+[WARNING] nullTry to use a single 'var' statement per scope.
+length<1){returnfalse;} ---> var  <--- currentPanel=this.currentPanel?this.currentPanel:
+[WARNING] nullTry to use a single 'var' statement per scope.
+this.currentPanel:panels[0]; ---> var  <--- nextPanel=(key==this.nextPanelKeyCode)?
+[WARNING] nullTry to use a single 'var' statement per scope.
+(panel);if(tab){ ---> var  <--- self=this;Spry.Widget.Accordion.
+[WARNING] nullTry to use a single 'var' statement per scope.
+=this.getPanels();for( ---> var  <--- i=0;i<panels.length;
+[WARNING] nullTry to use a single 'var' statement per scope.
+;}if(this.enableKeyboardNavigation){ ---> var  <--- tabIndexAttr=this.element.attributes.getNamedItem(
+[WARNING] nullTry to use a single 'var' statement per scope.
+("tabindex");if(tabIndexAttr){ ---> var  <--- self=this;Spry.Widget.Accordion.
+[WARNING] nullTry to use a single 'var' statement per scope.
+=this.getPanels();for( ---> var  <--- i=0;i<panels.length;
+[WARNING] nullTry to use a single 'var' statement per scope.
+element){var children=[]; ---> var  <--- child=element.firstChild;while(child)
+[WARNING] nullTry to use a single 'var' statement per scope.
+=accordion.getPanels();for( ---> var  <--- i=0;i<panels.length;
+[WARNING] nullTry to use a single 'var' statement per scope.
+<panels.length;i++){ ---> var  <--- p=panels[i];var c=
+[WARNING] nullTry to use a single 'var' statement per scope.
+{var p=panels[i]; ---> var  <--- c=accordion.getPanelContent(p);if
+[WARNING] nullTry to use a single 'var' statement per scope.
+(p);if(c){ ---> var  <--- h=c.offsetHeight;if(h==
+[WARNING] nullTry to use a single 'var' statement per scope.
+p==panel||h>0){ ---> var  <--- obj=new Object;obj.panel=p
+[WARNING] nullInvalid hint syntax: use strict
+(function(){ ---> "use strict" <--- ;angular.module("ApplicationModule",[])
+[ERROR] null5395:39missing name after . operator
+[ERROR] null5398:41missing name after . operator
+[ERROR] null1:0Compilation produced 2 syntax errors.
+[WARNING] nullTry to use a single 'var' statement per scope.
+=Spry.Widget.Accordion.loadQueue; ---> var  <--- qlen=q.length;for(var i
+[WARNING] nullTry to use a single 'var' statement per scope.
+var qlen=q.length;for( ---> var  <--- i=0;i<qlen;i++
+[WARNING] nullTry to use a single 'var' statement per scope.
+){var panelA=this.currentPanel; ---> var  <--- panelB=panel;if(!panelB||panelA
+[WARNING] nullTry to use a single 'var' statement per scope.
+||panelA==panelB){return;} ---> var  <--- contentA;if(panelA){contentA=this
+[WARNING] nullTry to use a single 'var' statement per scope.
+=this.getPanelContent(panelA);} ---> var  <--- contentB=this.getPanelContent(panelB);if
+[WARNING] nullTry to use a single 'var' statement per scope.
+var panels=this.getPanels(); ---> var  <--- curPanelIndex=this.getCurrentPanelIndex();if(
+[WARNING] nullTry to use a single 'var' statement per scope.
+var panels=this.getPanels(); ---> var  <--- curPanelIndex=this.getCurrentPanelIndex();if(
+[WARNING] nullTry to use a single 'var' statement per scope.
+.nextPanelKeyCode)){returntrue;} ---> var  <--- panels=this.getPanels();if(
+[WARNING] nullTry to use a single 'var' statement per scope.
+length<1){returnfalse;} ---> var  <--- currentPanel=this.currentPanel?this.currentPanel:
+[WARNING] nullTry to use a single 'var' statement per scope.
+this.currentPanel:panels[0]; ---> var  <--- nextPanel=(key==this.nextPanelKeyCode)?
+[WARNING] nullTry to use a single 'var' statement per scope.
+(panel);if(tab){ ---> var  <--- self=this;Spry.Widget.Accordion.
+[WARNING] nullTry to use a single 'var' statement per scope.
+=this.getPanels();for( ---> var  <--- i=0;i<panels.length;
+[WARNING] nullTry to use a single 'var' statement per scope.
+;}if(this.enableKeyboardNavigation){ ---> var  <--- tabIndexAttr=this.element.attributes.getNamedItem(
+[WARNING] nullTry to use a single 'var' statement per scope.
+("tabindex");if(tabIndexAttr){ ---> var  <--- self=this;Spry.Widget.Accordion.
+[WARNING] nullTry to use a single 'var' statement per scope.
+=this.getPanels();for( ---> var  <--- i=0;i<panels.length;
+[WARNING] nullTry to use a single 'var' statement per scope.
+element){var children=[]; ---> var  <--- child=element.firstChild;while(child)
+[WARNING] nullTry to use a single 'var' statement per scope.
+=accordion.getPanels();for( ---> var  <--- i=0;i<panels.length;
+[WARNING] nullTry to use a single 'var' statement per scope.
+<panels.length;i++){ ---> var  <--- p=panels[i];var c=
+[WARNING] nullTry to use a single 'var' statement per scope.
+{var p=panels[i]; ---> var  <--- c=accordion.getPanelContent(p);if
+[WARNING] nullTry to use a single 'var' statement per scope.
+(p);if(c){ ---> var  <--- h=c.offsetHeight;if(h==
+[WARNING] nullTry to use a single 'var' statement per scope.
+p==panel||h>0){ ---> var  <--- obj=new Object;obj.panel=p
+[WARNING] nullInvalid hint syntax: use strict
+(function(){ ---> "use strict" <--- ;angular.module("ApplicationModule",[])
+[ERROR] null5395:39missing name after . operator
+[ERROR] null5398:41missing name after . operator
+[ERROR] null1:0Compilation produced 2 syntax errors.

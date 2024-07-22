@@ -1,0 +1,10 @@
+diff --git a/application.properties b/application.properties
+--- a/application.properties
++++ b/application.properties
+@@ -1,5 +1,5 @@
+ #Grails Metadata file
+-#Tue Nov 06 16:20:31 SGT 2018
++#Tue Feb 06 13:12:46 CST 2024
+ app.grails.version=2.0.1
+ app.name=tfs-web
+ app.servlet.version=2.5
